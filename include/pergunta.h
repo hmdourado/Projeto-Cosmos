@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2026
  * 
  */
+#ifndef PERGUNTA_H
+#define PERGUNTA_H
 
 #define ENUNCIADO_TAM 300
 #define ALTERNATIVA_TAM 150
@@ -20,3 +22,12 @@ typedef enum {
     DIFICIL,
     MUITO_DIFICIL,
 } NivelDificuldade;
+
+typedef struct {
+    int id;
+    char enunciado[ENUNCIADO_TAM];
+    char alternativas[QUANT_ALTERNATIVAS][ALTERNATIVA_TAM];
+    NivelDificuldade nivel;
+} Pergunta;
+
+#endif
