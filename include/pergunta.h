@@ -36,7 +36,7 @@ typedef struct {
     int id;
     char enunciado[TAM_ENUNCIADO];
     char alternativas[QUANT_ALTERNATIVAS][TAM_ALTERNATIVA];
-    char respostaCorreta[TAM_ALTERNATIVA];
+    char respostaCorreta;
     NivelDificuldade nivel;
 } Pergunta;
 
