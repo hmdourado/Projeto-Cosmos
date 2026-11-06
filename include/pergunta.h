@@ -17,24 +17,26 @@
 #define PERGUNTA_H
 
 // Defição de tamanhos e quantidades, desse modo caso seja necessário a alteração ficará mais fácil de dar a manutenção.
-#define ENUNCIADO_TAM 300
-#define ALTERNATIVA_TAM 150
+#define TAM_ENUNCIADO 300
+#define TAM_ALTERNATIVA 150
 #define QUANT_ALTERNATIVAS 4
 
 //Estrutura de niveis de perguntas
 typedef enum {
-    MUITO_FACIL = 1,
+    NAO_DEFINIDO = 0,
+    MUITO_FACIL,
     FACIL,
     MEDIO,
     DIFICIL,
-    MUITO_DIFICIL,
+    MUITO_DIFICIL
 } NivelDificuldade;
 
 //Estrutura que será utilizada para formulação de uma pergunata
 typedef struct {
     int id;
-    char enunciado[ENUNCIADO_TAM];
-    char alternativas[QUANT_ALTERNATIVAS][ALTERNATIVA_TAM];
+    char enunciado[TAM_ENUNCIADO];
+    char alternativas[QUANT_ALTERNATIVAS][TAM_ALTERNATIVA];
+    char respostaCorreta[TAM_ALTERNATIVA];
     NivelDificuldade nivel;
 } Pergunta;
 
