@@ -102,7 +102,7 @@ int validarPergunta(Pergunta *p) {
  * caso o valor não corresponda a uma opção válida.
  */
 char *obterNomeNivel(NivelDificuldade nivel){
-  //Estrutura switch para transforma nível númerico recebido por enum em string
+  //Estrutura switch para transforma nível númerico recebido por enum em string.
   switch (nivel){
     case NAO_DEFINIDO:
       return "Não definido";
@@ -125,4 +125,33 @@ char *obterNomeNivel(NivelDificuldade nivel){
     default:
       return "Nível inválido";
   }
+}
+
+
+/**
+ * @brief Retorna a letra correspondente ao índice de uma alternativa.
+ *
+ * Converte os índices de 0 a 3 nas letras A, B, C e D.
+ *
+ * @param indice Índice da alternativa.
+ * @return Letra correspondente ou '\0' caso o índice seja inválido.
+ */
+char obterNomeAlternativa(int indice){
+  //Verifica cada condição e retorna seu valor determinado.
+  if (indice >= 0 && indice <= 3){
+    if (indice == 0){
+      return 'A';
+
+    } else if (indice == 1){
+      return 'B';
+
+    } else if (indice == 2){
+      return 'C';
+
+    } else if (indice == 3){
+      return 'D';
+    } 
+  }
+
+  return '\0';
 }
