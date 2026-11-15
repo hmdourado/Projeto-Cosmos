@@ -19,9 +19,13 @@
 #include <string.h>
 
 /**
- * @brief Inicializar os campos de uma pergunta.
- * 
- * @param p 
+ * @brief Inicializa todos os campos de uma pergunta com valores padrão.
+ *
+ * Define o ID como 0, limpa o enunciado e as alternativas,
+ * inicializa a resposta correta como caractere nulo e define
+ * o nível de dificuldade como NAO_DEFINIDO.
+ *
+ * @param p Ponteiro para a estrutura Pergunta que será inicializada.
  */
 void inicializarPergunta (Pergunta *p){
     //Verificação para evitar acesssar estrutura inexistente.
@@ -41,4 +45,48 @@ void inicializarPergunta (Pergunta *p){
 
     //Nivel iniciando  como não definido ainda.
     p->nivel = NAO_DEFINIDO;
+}
+
+/**
+ * @brief Valida os dados de uma pergunta.
+ * @param p Ponteiro para a pergunta que será validada.
+ * @return 1 se a pergunta for válida; 0 caso contrário.
+ */
+int validarPergunta(Pergunta *p) {
+  //Verificação para evitar acesssar estrutura inexistente.
+  if (p == NULL){
+    return 0;
+  }
+
+  //strlen() conta os caracteres de p-> enunciado e atribui o valor a 'valido'.
+  size_t valido = strlen(p->enunciado);
+
+  //Verifica se enunciado possui caracteres validos.
+  if (valido == 0){
+    return 0;
+  } 
+
+  //Percorre as alternativas e verifica se está valida
+  for (size_t i = 0; i < QUANT_ALTERNATIVAS; i++){
+    if (strlen(p->alternativas[i]) == 0){
+      return 0;
+    }
+  }
+
+  //Verifica se a resposta selecionada está condizente com as possibilidades.
+  if (p->respostaCorreta != 'A' && 
+      p->respostaCorreta != 'B' && 
+      p->respostaCorreta != 'C' && 
+      p->respostaCorreta != 'D'){
+
+    return 0;
+  } 
+
+  //Verifica se o nível está no intervalo correto.
+  if (p->nivel < MUITO_FACIL || p->nivel > MUITO_DIFICIL){
+    return 0;
+  }
+
+  //Retorno da função após verificações.
+  return 1;
 }
