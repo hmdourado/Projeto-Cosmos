@@ -18,15 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * @brief Inicializa todos os campos de uma pergunta com valores padrão.
- *
- * Define o ID como 0, limpa o enunciado e as alternativas,
- * inicializa a resposta correta como caractere nulo e define
- * o nível de dificuldade como NAO_DEFINIDO.
- *
- * @param p Ponteiro para a estrutura Pergunta que será inicializada.
- */
 void inicializarPergunta (Pergunta *p){
     //Verificação para evitar acesssar estrutura inexistente.
       if (p == NULL) {
@@ -47,11 +38,6 @@ void inicializarPergunta (Pergunta *p){
     p->nivel = NAO_DEFINIDO;
 }
 
-/**
- * @brief Valida os dados de uma pergunta.
- * @param p Ponteiro para a pergunta que será validada.
- * @return 1 se a pergunta for válida; 0 caso contrário.
- */
 int validarPergunta(Pergunta *p) {
   //Verificação para evitar acesssar estrutura inexistente.
   if (p == NULL){
@@ -91,16 +77,6 @@ int validarPergunta(Pergunta *p) {
   return 1;
 }
 
-/**
- * @brief Retorna o nome correspondente ao nível de dificuldade.
- *
- * Converte um valor da enumeração NivelDificuldade
- * em sua representação textual.
- *
- * @param nivel Nível de dificuldade que será convertido.
- * @return Nome do nível de dificuldade ou "Nível inválido"
- * caso o valor não corresponda a uma opção válida.
- */
 char *obterNomeNivel(NivelDificuldade nivel){
   //Estrutura switch para transforma nível númerico recebido por enum em string.
   switch (nivel){
@@ -127,15 +103,6 @@ char *obterNomeNivel(NivelDificuldade nivel){
   }
 }
 
-
-/**
- * @brief Retorna a letra correspondente ao índice de uma alternativa.
- *
- * Converte os índices de 0 a 3 nas letras A, B, C e D.
- *
- * @param indice Índice da alternativa.
- * @return Letra correspondente ou '\0' caso o índice seja inválido.
- */
 char obterNomeAlternativa(int indice){
   //Verifica cada condição e retorna seu valor determinado.
   if (indice >= 0 && indice <= 3){
@@ -154,4 +121,23 @@ char obterNomeAlternativa(int indice){
   }
 
   return '\0';
+}
+
+void exibirPergunta(Pergunta *p){
+  if (p == NULL) {
+        return;
+    }
+
+    printf("\n========================================\n");
+    printf("Nível: %s\n\n", obterNomeNivel(p->nivel));
+
+    printf("%s\n\n", p->enunciado);
+
+    for (size_t  i = 0; i < QUANT_ALTERNATIVAS; i++) {
+        printf("%c) %s\n",
+               obterNomeAlternativa(i),
+               p->alternativas[i]);
+    }
+
+    printf("========================================\n");
 }
