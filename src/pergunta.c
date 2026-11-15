@@ -90,3 +90,39 @@ int validarPergunta(Pergunta *p) {
   //Retorno da função após verificações.
   return 1;
 }
+
+/**
+ * @brief Retorna o nome correspondente ao nível de dificuldade.
+ *
+ * Converte um valor da enumeração NivelDificuldade
+ * em sua representação textual.
+ *
+ * @param nivel Nível de dificuldade que será convertido.
+ * @return Nome do nível de dificuldade ou "Nível inválido"
+ * caso o valor não corresponda a uma opção válida.
+ */
+char *obterNomeNivel(NivelDificuldade nivel){
+  //Estrutura switch para transforma nível númerico recebido por enum em string
+  switch (nivel){
+    case NAO_DEFINIDO:
+      return "Não definido";
+    
+    case MUITO_FACIL:
+      return "Muito fácil";
+
+    case FACIL:
+      return "Fácil";
+    
+    case MEDIO:
+      return "Médio";
+
+    case DIFICIL:
+      return "Difícil";
+
+    case MUITO_DIFICIL:
+      return "Muito Difícil";
+
+    default:
+      return "Nível inválido";
+  }
+}
