@@ -15,7 +15,7 @@
 #include "../include/pergunta.h"
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 
 void inicializarPergunta (Pergunta *p){
@@ -128,12 +128,15 @@ void exibirPergunta(Pergunta *p){
         return;
     }
 
+    //Exibição de nível
     printf("\n========================================\n");
     printf("Nível: %s\n\n", obterNomeNivel(p->nivel));
 
+    //Exibição do enunciado
     printf("%s\n\n", p->enunciado);
 
-    for (size_t  i = 0; i < QUANT_ALTERNATIVAS; i++) {
+    //Exibição de alternativas
+    for (size_t i = 0; i < QUANT_ALTERNATIVAS; i++) {
         printf("%c) %s\n",
                obterNomeAlternativa(i),
                p->alternativas[i]);
