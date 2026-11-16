@@ -1,4 +1,14 @@
-
+/**
+ * @file cadastro.h
+ * @author Henrique Dourado
+ * @brief Definições e protótipos para o gerenciamento de perguntas.
+ * @version 0.1
+ * @date 2026-11-16
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+ * 
+ */
 #ifndef CADASTRO_H
 #define CADASTRO_H
 

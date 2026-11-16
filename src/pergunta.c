@@ -1,13 +1,12 @@
 /**
  * @file pergunta.c
  * @author Henrique Dourado
- * @brief 
+ * @brief Funções responsáveis por operações básicas sobre uma pergunta.
  * @version 0.1
  * @date 2026-11-06
  * 
  * @copyright Copyright (c) 2026
  * 
- * Funções responsáveis por operações básicas sobre uma pergunta
  * 
  */
 
@@ -20,8 +19,8 @@
 
 void inicializarPergunta (Pergunta *p){
     //Verificação para evitar acesssar estrutura inexistente.
-      if (p == NULL) {
-        return;
+    if (p == NULL) {
+      return;
     }
 
     //ID começa em 0 indicando que não foi atribuido.

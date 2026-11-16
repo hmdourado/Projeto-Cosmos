@@ -1,14 +1,12 @@
 /**
  * @file pergunta.h
  * @author Henrique Dourado 
- * @brief 
+ * @brief Estruturas para perguntas que serão utilizadas no jogo.
  * @version 0.1
  * @date 2026-11-06
  * 
  * @copyright Copyright (c) 2026
  * 
- * Estruturas para perguntas que serão utilizadas no jogo,
- * com proteção de inclusão para casos de arquivos .c que utilizarem as estruras e declarações.
  * 
  */
 
