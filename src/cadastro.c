@@ -82,7 +82,34 @@ Pergunta *buscarPerguntaPorId(Cadastro *cadastro, int id){
             return &cadastro->perguntas[i];
         }
     }
-    
+
      // Retorna NULL caso nenhuma pergunta corresponda ao ID informado.
     return NULL;
+}
+
+int atualizarPergunta(Cadastro *cadastro, int id, const Pergunta *novaPergunta){
+    // Verifica se o cadastro existe e se o ID informado é válido e se os novos dados são existentes.
+    if (cadastro == NULL || id <= 0 || novaPergunta == NULL){
+        return 0;
+    }
+
+    //Armazenamento do resultado da busca.
+    Pergunta *perguntaEncontrada = buscarPerguntaPorId(cadastro, id);
+
+    //Verificação de pergunta encontrada.
+    if (perguntaEncontrada == NULL){
+        return 0;
+    }
+
+    // Guarda o identificador original.
+    int idOriginal = perguntaEncontrada->id;
+
+    // Substitui os dados da pergunta.
+    *perguntaEncontrada = *novaPergunta;
+
+    // Restaura o identificador original.
+    perguntaEncontrada->id = idOriginal;
+
+    //Retorna 1 que significa sucesso
+    return 1;
 }
