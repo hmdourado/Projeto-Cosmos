@@ -113,3 +113,32 @@ int atualizarPergunta(Cadastro *cadastro, int id, const Pergunta *novaPergunta){
     //Retorna 1 que significa sucesso
     return 1;
 }
+
+int removerPergunta(Cadastro *cadastro, int id){
+    // Verifica se o cadastro existe e se o ID informado é válido.
+    if (cadastro == NULL || id <= 0){
+        return 0;
+    }
+
+    // Busca a pergunta correspondente ao ID informado.
+    Pergunta *perguntaEncontrada = buscarPerguntaPorId(cadastro, id);
+
+    // Verifica se a pergunta foi encontrada.
+    if (perguntaEncontrada == NULL){
+        return 0;
+    }
+
+    // Calcula o índice da pergunta encontrada no vetor.
+    size_t indice = perguntaEncontrada - cadastro->perguntas;
+
+    // Desloca as perguntas seguintes para preencher a posição removida.
+    for (size_t i = indice; i < cadastro->quantidade - 1; i++){
+        cadastro->perguntas[i] = cadastro->perguntas[i + 1];
+    }
+
+    // Atualiza a quantidade de perguntas cadastradas.
+    cadastro->quantidade--;
+
+    // Indica que a remoção foi realizada com sucesso.
+    return 1;
+}
