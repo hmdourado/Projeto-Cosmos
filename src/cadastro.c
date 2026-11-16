@@ -142,3 +142,16 @@ int removerPergunta(Cadastro *cadastro, int id){
     // Indica que a remoção foi realizada com sucesso.
     return 1;
 }
+
+void liberarCadastro(Cadastro *cadastro){
+    // Verifica se o cadastro existe.
+    if (cadastro == NULL){
+        return;
+    }
+
+    // Libera a memória do vetor.
+    free(cadastro->perguntas);
+
+    // Reinicializa os campos do cadastro.
+    inicializarCadastro(cadastro);
+}
