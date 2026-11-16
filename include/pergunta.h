@@ -29,7 +29,7 @@ typedef enum {
     MUITO_DIFICIL
 } NivelDificuldade;
 
-//Estrutura que será utilizada para formulação de uma pergunata
+//Estrutura que será utilizada para formulação de uma pergunta
 typedef struct {
     int id;
     char enunciado[TAM_ENUNCIADO];

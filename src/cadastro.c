@@ -31,7 +31,6 @@ void inicializarCadastro (Cadastro *cadastro){
 }
 
 int adicionarPergunta(Cadastro *cadastro, const Pergunta *pergunta){
-
     // Verifica se os ponteiros recebidos são válidos.
     if (cadastro == NULL || pergunta == NULL){
         return 0;
@@ -66,4 +65,24 @@ int adicionarPergunta(Cadastro *cadastro, const Pergunta *pergunta){
 
     // Indica que a operação foi concluída com sucesso.
     return 1;
+}
+
+Pergunta *buscarPerguntaPorId(Cadastro *cadastro, int id){
+    // Verifica se o cadastro existe e se o ID informado é válido.
+    if (cadastro == NULL || id <= 0){
+        return NULL;
+    }
+
+    // Percorre todas as perguntas efetivamente cadastradas.
+    for (size_t i = 0; i < cadastro->quantidade; i++){
+        // Compara o ID da pergunta atual com o identificador procurado.
+        if (cadastro->perguntas[i].id == id){
+
+             // Retorna o endereço da pergunta encontrada no vetor.
+            return &cadastro->perguntas[i];
+        }
+    }
+    
+     // Retorna NULL caso nenhuma pergunta corresponda ao ID informado.
+    return NULL;
 }
