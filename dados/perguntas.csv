@@ -1,0 +1,81 @@
+id,nivel,enunciado,alternativaA,alternativaB,alternativaC,alternativaD,respostaCorreta
+1,1,Qual é a estrela localizada no centro do Sistema Solar?,Lua,Sol,Sirius,Vênus,B
+2,1,Em qual planeta está localizada a humanidade?,Marte,Júpiter,Terra,Saturno,C
+3,1,Qual é o satélite natural da Terra?,Europa,Lua,Fobos,Titã,B
+4,1,Qual planeta é conhecido como planeta vermelho?,Marte,Netuno,Mercúrio,Urano,A
+5,1,Qual é o planeta mais próximo do Sol?,Terra,Vênus,Mercúrio,Marte,C
+6,1,Como se chama a galáxia onde está o Sistema Solar?,Andrômeda,Via Láctea,Sombreiro,Olho Negro,B
+7,1,Qual astro ilumina a Terra durante o dia?,A Lua,O Sol,Marte,Vênus,B
+8,1,Qual instrumento é usado para observar objetos celestes distantes?,Microscópio,Termômetro,Telescópio,Barômetro,C
+9,1,Qual movimento da Terra está relacionado à alternância entre dia e noite?,Translação,Rotação,Precessão,Nutação,B
+10,1,Em torno de qual astro os planetas do Sistema Solar orbitam?,Da Lua,De Marte,Do Sol,De Júpiter,C
+11,1,Qual planeta é famoso por seus grandes anéis visíveis?,Saturno,Mercúrio,Terra,Marte,A
+12,1,Qual é o nome do planeta em que vivemos?,Netuno,Terra,Urano,Vênus,B
+13,1,O que é uma estrela?,Um corpo que produz energia e emite luz,Um planeta sem atmosfera,Um satélite artificial,Uma rocha que sempre orbita a Terra,A
+14,1,Qual destes corpos é um planeta anão do Sistema Solar?,Plutão,Sirius,A Lua,Sol,A
+15,1,Qual é o nome do caminho aparente do Sol no céu ao longo do ano em relação às estrelas?,Eclíptica,Equador terrestre,Meridiano de Greenwich,Horizonte local,A
+16,1,Qual destes objetos é uma estrela?,Júpiter,Sirius,Europa,Ceres,B
+17,1,A Lua possui luz própria semelhante à do Sol?,Sim e é uma estrela,Não pois reflete a luz solar,Sim mas apenas à noite,Não pois é feita de gelo,B
+18,1,Quantos planetas são reconhecidos no Sistema Solar?,Sete,Oito,Nove,Dez,B
+19,1,Qual planeta é o terceiro a partir do Sol?,Vênus,Marte,Terra,Júpiter,C
+20,1,Como chamamos uma pessoa treinada para viajar ao espaço?,Geólogo,Astronauta,Meteorologista,Oceanógrafo,B
+21,2,Qual é o maior planeta do Sistema Solar em diâmetro?,Saturno,Júpiter,Netuno,Terra,B
+22,2,Qual planeta apresenta a maior temperatura média na superfície?,Mercúrio,Marte,Vênus,Júpiter,C
+23,2,Entre quais planetas fica o principal cinturão de asteroides?,Terra e Marte,Marte e Júpiter,Júpiter e Saturno,Vênus e Terra,B
+24,2,Do que são compostos principalmente os cometas?,Gelo poeira e rochas,Ferro líquido,Plasma puro,Apenas gases metálicos,A
+25,2,Qual é aproximadamente a distância média entre a Terra e o Sol chamada de unidade astronômica?,1 milhão de quilômetros,150 milhões de quilômetros,1 bilhão de quilômetros,30 milhões de quilômetros,B
+26,2,Quais são os quatro planetas rochosos mais próximos do Sol?,Mercúrio Vênus Terra e Marte,Terra Marte Júpiter e Saturno,Vênus Terra Saturno e Urano,Mercúrio Marte Urano e Netuno,A
+27,2,Qual planeta tem uma rotação tão inclinada que costuma ser descrito como girando de lado?,Marte,Urano,Mercúrio,Terra,B
+28,2,O que explica as diferentes fases da Lua?,A sombra da Terra em todas as fases,A mudança real do formato lunar,A porção iluminada da Lua que vemos da Terra,Nuvens que cobrem partes da Lua,C
+29,2,Em um eclipse solar total qual corpo fica entre a Terra e o Sol?,Marte,A Lua,Júpiter,Vênus,B
+30,2,Em um eclipse lunar qual corpo fica entre o Sol e a Lua?,A Terra,Marte,Mercúrio,Vênus,A
+31,2,Qual é o nome da camada do Sol que vemos como sua superfície brilhante?,Núcleo,Coroa,Fotosfera,Zona radiativa,C
+32,2,O que é um ano-luz?,Uma unidade de tempo igual a um ano,A distância percorrida pela luz em um ano,A duração de uma órbita lunar,A velocidade da luz por segundo,B
+33,2,Qual constelação é facilmente reconhecida pelas três estrelas alinhadas do cinturão?,Órion,Cruzeiro do Sul,Cassiopeia,Cão Maior,A
+34,2,Qual planeta tem a órbita mais curta ao redor do Sol?,Terra,Marte,Mercúrio,Vênus,C
+35,2,Qual planeta é conhecido por possuir a Grande Mancha Vermelha?,Saturno,Júpiter,Netuno,Urano,B
+36,2,Qual planeta é o mais distante do Sol entre os oito planetas?,Urano,Saturno,Netuno,Júpiter,C
+37,2,Como é chamada a região da atmosfera solar que pode ser vista como uma auréola durante um eclipse solar total?,Coroa,Fotosfera,Núcleo,Manto,A
+38,2,Qual é o nome do fenômeno em que partículas solares interagem com a atmosfera e produzem luzes coloridas perto dos polos?,Aurora,Eclipse,Trânsito,Ocultação,A
+39,2,Qual planeta possui uma atmosfera muito densa rica em dióxido de carbono e nuvens de ácido sulfúrico?,Marte,Vênus,Mercúrio,Urano,B
+40,2,Qual é o principal componente do Sol em quantidade?,Oxigênio,Ferro,Hidrogênio,Silício,C
+41,3,Quais são os nomes das duas pequenas luas de Marte?,Io e Europa,Fobos e Deimos,Titã e Encélado,Caronte e Nix,B
+42,3,O que é a Grande Mancha Vermelha de Júpiter?,Uma cratera de impacto,Uma tempestade atmosférica persistente,Um oceano de lava,Uma região polar congelada,B
+43,3,O que significa dizer que Vênus possui rotação retrógrada?,Gira no sentido oposto ao da maioria dos planetas,Não gira em torno do próprio eixo,Gira uma vez por hora,Gira sempre com o mesmo lado voltado ao Sol,A
+44,3,Por que se diz que Saturno tem densidade média menor que a da água?,Porque é composto principalmente por gases e sua densidade média é inferior a 1 g/cm³,Porque não possui gravidade,Porque é inteiramente oco,Porque sua massa é menor que a de qualquer lua,A
+45,3,Qual lua de Júpiter é considerada um forte local candidato a abrigar um oceano sob sua crosta de gelo?,Io,Europa,Calisto,Amalteia,B
+46,3,Qual lua de Saturno possui lagos e mares de metano e etano líquidos na superfície?,Titã,Mimas,Reia,Hipérion,A
+47,3,Qual planeta anão está localizado no cinturão de asteroides entre Marte e Júpiter?,Plutão,Éris,Ceres,Haumea,C
+48,3,Em qual região do Sistema Solar Plutão está localizado?,Cinturão de asteroides,Cinturão de Kuiper,Nuvem de Oort interna,Órbita de Júpiter,B
+49,3,Qual é a principal região de pequenos corpos gelados localizada além da órbita de Netuno?,Cinturão de Kuiper,Cinturão de Van Allen,Cinturão principal de asteroides,Zona habitável,A
+50,3,Em qual região o Telescópio Espacial Hubble realiza suas observações?,Na superfície da Lua,Em órbita ao redor da Terra,Em órbita ao redor de Marte,Na superfície terrestre,B
+51,3,Em qual região do espaço o Telescópio Espacial James Webb opera principalmente?,Perto do ponto L2 do sistema Sol-Terra,Em órbita baixa da Terra,Na órbita de Marte,Na superfície lunar,A
+52,3,Qual técnica permite estudar a composição química de estrelas pela análise da luz que elas emitem?,Espectroscopia,Sismologia,Cartografia,Tomografia médica,A
+53,3,Qual método usa a mudança aparente de posição de uma estrela devido à mudança do ponto de observação da Terra para estimar sua distância?,Paralaxe,Efeito Doppler térmico,Lente gravitacional forte,Polarimetria,A
+54,3,O que é a radiação cósmica de fundo em micro-ondas?,Luz refletida pelos planetas,Radiação remanescente do Universo primordial,Emissão de rádio exclusiva do Sol,Sinal produzido por satélites artificiais,B
+55,3,Qual é o nome do limite em que a gravidade de um corpo pode superar a força de coesão de um satélite e desintegrá-lo por forças de maré?,Limite de Roche,Limite de Chandrasekhar,Horizonte cosmológico,Ponto de Lagrange,A
+56,4,Qual é aproximadamente o limite de massa de Chandrasekhar para uma anã branca não rotativa?,0.14 massa solar,1.4 massas solares,14 massas solares,140 massas solares,B
+57,4,O que é o horizonte de eventos de um buraco negro?,A região de maior brilho ao redor dele,A fronteira além da qual nada pode escapar para o exterior,A órbita mais distante de seus planetas,A superfície sólida de seu núcleo,B
+58,4,O raio de Schwarzschild descreve qual característica de um buraco negro não rotativo e sem carga?,O raio do horizonte de eventos,A distância até a galáxia mais próxima,O raio de sua estrela progenitora,O tamanho de seu disco de acreção,A
+59,4,O que o desvio cosmológico para o vermelho da luz de galáxias distantes indica em larga escala?,A expansão do Universo,A redução da velocidade da luz no espaço vazio,A aproximação de todas as galáxias,A existência de oxigênio em todas as galáxias,A
+60,4,Qual tipo de estrela variável é usado para estimar distâncias devido à relação entre seu período de pulsação e sua luminosidade?,Cefeida,Anã marrom,Estrela de nêutrons,Estrela T Tauri,A
+61,4,Por que supernovas do tipo Ia são úteis em estudos cosmológicos?,Porque apresentam luminosidades máximas que podem ser calibradas para estimar distâncias,Porque ocorrem diariamente em todas as galáxias,Porque não emitem radiação,Porque só existem na Via Láctea,A
+62,4,Qual objeto extremamente denso pode se formar após o colapso do núcleo de uma estrela massiva?,Anã branca,Estrela de nêutrons,Planeta rochoso,Cometa,B
+63,4,O que caracteriza um pulsar?,Uma estrela de nêutrons em rotação que emite feixes observados como pulsos,Um planeta que pulsa por causa de terremotos,Uma galáxia que muda de cor periodicamente,Uma anã branca sem campo magnético,A
+64,4,O que são os pontos de Lagrange em um sistema de dois corpos massivos?,Regiões onde forças gravitacionais e efeitos do movimento orbital permitem equilíbrio no referencial rotativo,Locais onde a gravidade é sempre zero em qualquer referencial,Pontos na superfície de uma estrela,Regiões onde a luz deixa de se propagar,A
+65,4,Qual região hipotética do Sistema Solar é considerada um reservatório de cometas de longo período e teria formato aproximadamente esférico?,Nuvem de Oort,Cinturão de Kuiper,Cinturão principal,Magnetosfera terrestre,A
+66,4,O que é o vento solar?,Fluxo de partículas carregadas emitidas continuamente pelo Sol,Vento atmosférico que sopra na superfície solar,Luz visível refletida pela Lua,Fluxo de meteoritos que sai de Júpiter,A
+67,4,Como é chamada a fronteira aproximada onde o vento solar deixa de dominar e encontra o meio interestelar?,Heliopausa,Fotosfera,Cromosfera,Linha de neve,A
+68,4,Qual processo nuclear predomina no núcleo de uma estrela da sequência principal como o Sol?,Fusão de hidrogênio em hélio,Fissão de urânio em chumbo,Combustão química de oxigênio,Fusão de ferro em hidrogênio,A
+69,4,O que é representado principalmente em um diagrama de Hertzsprung-Russell?,Luminosidade em função da temperatura ou tipo espectral das estrelas,Distância dos planetas em função de suas luas,Massa dos cometas em função de sua velocidade,Idade das galáxias em função da distância da Terra,A
+70,4,Qual fenômeno explica a formação de caudas em cometas quando se aproximam do Sol?,Ação da radiação solar e do vento solar sobre gases e poeira liberados pelo núcleo,Atração dos anéis de Saturno,Fusão do núcleo com a superfície solar,Reflexão da luz apenas na face escura,A
+71,5,Qual é aproximadamente a temperatura atual da radiação cósmica de fundo em micro-ondas?,2.7 kelvins,27 kelvins,270 kelvins,2.700 kelvins,A
+72,5,Na lei de Hubble-Lemaître para galáxias suficientemente distantes no regime cosmológico local qual grandeza é aproximadamente proporcional à distância?,A velocidade de recessão,A massa do buraco negro central,A temperatura superficial,O número de planetas,A
+73,5,O que é uma lente gravitacional?,A deflexão e distorção da luz pela gravidade de uma distribuição de massa,Um telescópio que usa somente lentes de vidro,A absorção total da luz por uma estrela,Uma técnica para resfriar detectores,A
+74,5,O que são oscilações acústicas de bárions no contexto da cosmologia?,Uma escala característica impressa na distribuição de matéria a partir de ondas de pressão do Universo primordial,Vibrações sonoras produzidas atualmente dentro de galáxias,Oscilações magnéticas exclusivas do Sol,Ondas sísmicas no interior de planetas rochosos,A
+75,5,No sistema Sol-Terra onde está aproximadamente o ponto de Lagrange L1?,Entre a Terra e o Sol,Atrás da Terra em relação ao Sol no ponto L2,Na órbita de Marte,No centro do Sol,A
+76,5,Na linguagem da astrofísica o que significa metalicidade de uma estrela?,Abundância de elementos mais pesados que hélio,Quantidade de ferro exclusivamente,Proporção de hidrogênio em relação ao oxigênio apenas,Quantidade de metais sólidos na superfície,A
+77,5,O que representa o limite de Eddington para um objeto astrofísico luminoso em acreção aproximadamente esférica?,A luminosidade em que a pressão da radiação pode equilibrar a atração gravitacional,A massa mínima para formar um planeta,A temperatura em que o hidrogênio congela,A velocidade máxima de rotação de uma galáxia,A
+78,5,A radiação Hawking está associada a qual fenômeno teórico?,Emissão térmica atribuída a efeitos quânticos em campos próximos ao horizonte de eventos,Reflexão da luz no disco de acreção,Fusão nuclear na superfície do buraco negro,Emissão de ondas sonoras pelo horizonte,A
+79,5,Qual condição está diretamente associada ao início de uma supernova de colapso do núcleo do tipo II em uma estrela massiva evoluída?,O núcleo perde suporte e colapsa após não conseguir sustentar-se com a fusão de elementos mais leves,Um planeta gigante atravessa a fotosfera,A estrela deixa de girar completamente,A estrela transforma todo o ferro em hidrogênio,A
+80,5,Por que a detecção de ondas gravitacionais produzidas pela fusão de dois buracos negros é importante?,Permite observar perturbações do espaço-tempo previstas pela relatividade geral,Demonstra que buracos negros emitem luz visível diretamente,Mostra que a gravidade não se propaga,Comprova que o Universo é estático,A
