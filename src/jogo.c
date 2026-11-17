@@ -41,6 +41,10 @@ ResultadoResposta responderPergunta(Partida *partida, char resposta){
     if (resposta < 'A' || resposta > 'D'){
         return RESPOSTA_INVALIDA;
     }
+    // Uma alternativa eliminada não pode ser usada como resposta.
+    if (partida->ajudas.eliminadas[resposta - 'A']){
+        return RESPOSTA_INVALIDA;
+    }
 
     // Em caso de erro, encerra mantendo somente o valor do último marco.
     if (resposta != pergunta->respostaCorreta){
@@ -63,7 +67,16 @@ ResultadoResposta responderPergunta(Partida *partida, char resposta){
         return RESPOSTA_VITORIA;
     }
     partida->indiceAtual++;
+    prepararAjudasPergunta(&partida->ajudas);
     return RESPOSTA_CORRETA;
+}
+
+ResultadoAjuda usarAjuda(Partida *partida, TipoAjuda tipo){
+    const Pergunta *pergunta = obterPerguntaAtual(partida);
+    if (pergunta == NULL){
+        return AJUDA_NAO_PERMITIDA;
+    }
+    return aplicarAjuda(&partida->ajudas, pergunta, tipo);
 }
 
 int desistirPartida(Partida *partida){
@@ -92,6 +105,7 @@ void inicializarPartida(Partida *partida) {
     partida->premioAtual = 0;
     partida->premioGarantido = 0;
     partida->estado = PARTIDA_NAO_INICIADA;
+    inicializarAjudas(&partida->ajudas);
 }
 
 ResultadoInicio iniciarPartida(Partida *partida, const Cadastro *cadastro){

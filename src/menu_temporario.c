@@ -63,7 +63,27 @@ static void jogarNoTerminal(Cadastro *cadastro){
                obterPremioPergunta(partida.indiceAtual + 1));
         printf("%s\n", pergunta->enunciado);
         for (int i = 0; i < QUANT_ALTERNATIVAS; i++){
-            printf("%c) %s\n", 'A' + i, pergunta->alternativas[i]);
+            if (!partida.ajudas.eliminadas[i]){
+                printf("%c) %s\n", 'A' + i, pergunta->alternativas[i]);
+            }
+        }
+        // Mantém o conteúdo das ajudas visível até o fim da pergunta.
+        for (int tipo = AJUDA_MISSAO; tipo <= AJUDA_TELESCOPIO; tipo++){
+            if (partida.ajudas.ativas[tipo]){
+                const char *texto = obterTextoAjuda(pergunta, (TipoAjuda)tipo);
+                if (texto != NULL){
+                    printf("%s: %s\n", tipo == AJUDA_MISSAO ? "Missão Espacial" : "Telescópio", texto);
+                }
+            }
+        }
+        if (partida.ajudas.sugestaoEspecialista != '\0'){
+            printf("Especialista: sugiro %c (chance de acerto: %d%%).\n",
+                   partida.ajudas.sugestaoEspecialista, obterChanceEspecialista(pergunta->nivel));
+        }
+        const char *nomes[TOTAL_AJUDAS] = {"Supernova 50/50", "Missão Espacial", "Telescópio", "Especialista"};
+        for (int i = 0; i < TOTAL_AJUDAS; i++){
+            printf("%d - %s [%s]\n", i + 1, nomes[i],
+                   partida.ajudas.usadas[i] ? "usada" : "disponível");
         }
         puts("Responda A-D ou S para desistir:");
         fflush(stdout);
@@ -73,11 +93,27 @@ static void jogarNoTerminal(Cadastro *cadastro){
             break;
         }
 
+        // As teclas 1-4 acionam ajudas sem responder ou avançar a pergunta.
+        if (opcao >= '1' && opcao <= '4'){
+            TipoAjuda tipo = (TipoAjuda)(opcao - '1');
+            ResultadoAjuda resultado = usarAjuda(&partida, tipo);
+            if (resultado == AJUDA_JA_USADA){
+                puts("Esta ajuda já foi usada nesta partida.");
+            } else if (resultado == AJUDA_SEM_CONTEUDO){
+                puts("Esta pergunta não possui conteúdo para essa ajuda. Uso preservado.");
+            } else if (resultado != AJUDA_SUCESSO){
+                puts("Não foi possível usar a ajuda.");
+            } else {
+                printf("Ajuda utilizada: %s.\n", nomes[tipo]);
+            }
+            continue;
+        }
+
         // Guarda o gabarito antes da resposta, pois um acerto avança a partida.
         char correta = pergunta->respostaCorreta;
         ResultadoResposta resultado = responderPergunta(&partida, (char)opcao);
         if (resultado == RESPOSTA_INVALIDA){
-            puts("Entrada inválida. Use A, B, C, D ou S.");
+            puts("Entrada inválida. Use uma alternativa disponível, 1-4 para ajudas ou S.");
         } else if (resultado == RESPOSTA_INCORRETA){
             printf("Resposta incorreta. Alternativa correta: %c.\n", correta);
         } else {

@@ -7,6 +7,7 @@
 
 #include "pergunta.h"
 #include "cadastro.h"
+#include "ajuda.h"
 
 #define TOTAL_PERGUNTAS_PARTIDA 15
 
@@ -27,6 +28,7 @@ typedef struct {
     int premioAtual; /**< Valor inteiro em reais. */
     int premioGarantido; /**< Valor inteiro protegido pelo ultimo marco. */
     EstadoPartida estado;
+    EstadoAjudas ajudas;
 } Partida;
 
 /**
@@ -89,5 +91,8 @@ ResultadoResposta responderPergunta(Partida *partida, char resposta);
  * @return 1 se a desistência foi registrada; 0 se a ação não for permitida.
  */
 int desistirPartida(Partida *partida);
+
+/** @brief Usa uma ajuda na pergunta atual, sem avançar ou alterar o prêmio. */
+ResultadoAjuda usarAjuda(Partida *partida, TipoAjuda tipo);
 
 #endif

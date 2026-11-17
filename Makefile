@@ -4,7 +4,7 @@ CPPFLAGS = -Iinclude
 
 # Substitua pelo arquivo do menu definitivo quando ele estiver disponível.
 MENU_SRC ?= src/menu_temporario.c
-BASE_SRC = src/pergunta.c src/cadastro.c src/arquivo.c src/jogo.c
+BASE_SRC = src/pergunta.c src/cadastro.c src/arquivo.c src/jogo.c src/ajuda.c src/pistas.c
 HEADERS = $(wildcard include/*.h)
 PROGRAMA = build/cosmos
 
@@ -24,13 +24,17 @@ build/test_jogo: tests/test_jogo.c $(BASE_SRC) $(HEADERS) Makefile | build
 build/teste_integracao: tests/teste_integracao.c main.c $(BASE_SRC) $(HEADERS) Makefile | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) tests/teste_integracao.c $(BASE_SRC) $(LDFLAGS) $(LDLIBS) -o $@
 
-test: build/test_jogo build/teste_integracao
+build/test_ajuda: tests/test_ajuda.c $(BASE_SRC) $(HEADERS) Makefile | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) tests/test_ajuda.c $(BASE_SRC) $(LDFLAGS) $(LDLIBS) -o $@
+
+test: build/test_jogo build/teste_integracao build/test_ajuda
 	./build/test_jogo
 	./build/teste_integracao
+	./build/test_ajuda
 
 run: $(PROGRAMA)
 	./$(PROGRAMA) $(ARGS)
 
 # Remove somente os executáveis gerados, preservando os dados do usuário.
 clean:
-	$(RM) build/cosmos build/test_jogo build/teste_integracao
+	$(RM) build/cosmos build/test_jogo build/teste_integracao build/test_ajuda
