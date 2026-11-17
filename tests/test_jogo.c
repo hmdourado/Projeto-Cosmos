@@ -86,6 +86,64 @@ static void testarInicioPartida(void){
     assert(partida.perguntas[0].enunciado[0] != '\0');
 }
 
+/** @brief Verifica todos os pontos de erro e desistência, além da vitória. */
+static void testarRegrasPartida(void){
+    assert(obterPerguntaAtual(NULL) == NULL);
+    assert(responderPergunta(NULL, 'A') == RESPOSTA_NAO_PERMITIDA);
+    assert(desistirPartida(NULL) == 0);
+    assert(obterPremioPergunta(0) == 0);
+    assert(obterPremioPergunta(16) == 0);
+
+    for (int parada = 0; parada <= TOTAL_PERGUNTAS_PARTIDA; parada++){
+        Partida partida;
+        inicializarPartida(&partida);
+        assert(obterPerguntaAtual(&partida) == NULL);
+        assert(desistirPartida(&partida) == 0);
+        partida.estado = PARTIDA_EM_ANDAMENTO;
+        for (int i = 0; i < TOTAL_PERGUNTAS_PARTIDA; i++){
+            partida.perguntas[i].respostaCorreta = 'A';
+        }
+
+        for (int i = 0; i < parada; i++){
+            // Uma entrada inválida deve preservar todos os dados.
+            Partida anterior = partida;
+            assert(responderPergunta(&partida, 'Z') == RESPOSTA_INVALIDA);
+            assert(memcmp(&partida, &anterior, sizeof(partida)) == 0);
+            ResultadoResposta esperado = i == 14 ? RESPOSTA_VITORIA : RESPOSTA_CORRETA;
+            assert(responderPergunta(&partida, 'a') == esperado);
+            assert(partida.acertos == i + 1);
+            assert(partida.premioAtual == obterPremioPergunta(i + 1));
+            int garantido = i >= 9 ? 50000 : (i >= 4 ? 5000 : 0);
+            assert(partida.premioGarantido == garantido);
+        }
+
+        if (parada == TOTAL_PERGUNTAS_PARTIDA){
+            assert(partida.estado == PARTIDA_VITORIA);
+            assert(partida.premioAtual == 1000000);
+            assert(obterPerguntaAtual(&partida) == NULL);
+        } else {
+            assert(partida.indiceAtual == parada);
+            Partida desistente = partida;
+            assert(desistirPartida(&desistente) == 1);
+            assert(desistente.estado == PARTIDA_DESISTENCIA);
+            assert(desistente.premioAtual == obterPremioPergunta(parada));
+            assert(desistirPartida(&desistente) == 0);
+            assert(responderPergunta(&desistente, 'A') == RESPOSTA_NAO_PERMITIDA);
+
+            assert(responderPergunta(&partida, 'B') == RESPOSTA_INCORRETA);
+            assert(partida.estado == PARTIDA_DERROTA);
+            assert(partida.premioAtual == partida.premioGarantido);
+            assert(partida.acertos == parada);
+        }
+
+        // Nenhuma ação posterior ao fim pode modificar o resultado.
+        Partida encerrada = partida;
+        assert(responderPergunta(&partida, 'A') == RESPOSTA_NAO_PERMITIDA);
+        assert(desistirPartida(&partida) == 0);
+        assert(memcmp(&partida, &encerrada, sizeof(partida)) == 0);
+    }
+}
+
 int main(void) {
     Partida partida;
 
@@ -122,6 +180,7 @@ int main(void) {
 
     inicializarPartida(NULL);
     testarInicioPartida();
-    puts("Testes de inicialização e sorteio da partida passaram.");
+    testarRegrasPartida();
+    puts("Testes de inicialização, sorteio e regras da partida passaram.");
     return 0;
 }

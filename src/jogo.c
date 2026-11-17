@@ -6,6 +6,74 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <ctype.h>
+
+int obterPremioPergunta(int numero){
+    // Centraliza a tabela provisória de prêmios para facilitar ajustes do grupo.
+    const int premios[TOTAL_PERGUNTAS_PARTIDA] = {
+        1000, 2000, 3000, 4000, 5000,
+        10000, 20000, 30000, 40000, 50000,
+        100000, 200000, 300000, 500000, 1000000
+    };
+    if (numero < 1 || numero > TOTAL_PERGUNTAS_PARTIDA){
+        return 0;
+    }
+    return premios[numero - 1];
+}
+
+const Pergunta *obterPerguntaAtual(const Partida *partida){
+    // Impede a consulta de perguntas antes do início ou após o encerramento.
+    if (partida == NULL || partida->estado != PARTIDA_EM_ANDAMENTO ||
+        partida->indiceAtual < 0 || partida->indiceAtual >= TOTAL_PERGUNTAS_PARTIDA){
+        return NULL;
+    }
+    return &partida->perguntas[partida->indiceAtual];
+}
+
+ResultadoResposta responderPergunta(Partida *partida, char resposta){
+    const Pergunta *pergunta = obterPerguntaAtual(partida);
+    if (pergunta == NULL){
+        return RESPOSTA_NAO_PERMITIDA;
+    }
+
+    // Aceita letras minúsculas sem consumir tentativas para entradas inválidas.
+    resposta = (char)toupper((unsigned char)resposta);
+    if (resposta < 'A' || resposta > 'D'){
+        return RESPOSTA_INVALIDA;
+    }
+
+    // Em caso de erro, encerra mantendo somente o valor do último marco.
+    if (resposta != pergunta->respostaCorreta){
+        partida->premioAtual = partida->premioGarantido;
+        partida->estado = PARTIDA_DERROTA;
+        return RESPOSTA_INCORRETA;
+    }
+
+    // Registra o acerto e protege o prêmio ao atingir os marcos de segurança.
+    int numero = partida->indiceAtual + 1;
+    partida->acertos++;
+    partida->premioAtual = obterPremioPergunta(numero);
+    if (numero == 5 || numero == 10){
+        partida->premioGarantido = partida->premioAtual;
+    }
+
+    // A última resposta correta encerra a partida com vitória.
+    if (numero == TOTAL_PERGUNTAS_PARTIDA){
+        partida->estado = PARTIDA_VITORIA;
+        return RESPOSTA_VITORIA;
+    }
+    partida->indiceAtual++;
+    return RESPOSTA_CORRETA;
+}
+
+int desistirPartida(Partida *partida){
+    // A desistência só pode ocorrer enquanto existe uma pergunta disponível.
+    if (obterPerguntaAtual(partida) == NULL){
+        return 0;
+    }
+    partida->estado = PARTIDA_DESISTENCIA;
+    return 1;
+}
 
 void inicializarPartida(Partida *partida) {
     // Verifica se o ponteiro recebido é válido.

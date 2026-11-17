@@ -57,4 +57,37 @@ typedef enum {
  */
 ResultadoInicio iniciarPartida(Partida *partida, const Cadastro *cadastro);
 
+/** @brief Resultado de uma tentativa de resposta. */
+typedef enum {
+    RESPOSTA_INVALIDA = 0,
+    RESPOSTA_CORRETA,
+    RESPOSTA_INCORRETA,
+    RESPOSTA_VITORIA,
+    RESPOSTA_NAO_PERMITIDA
+} ResultadoResposta;
+
+/** @brief Retorna a pergunta atual, ou NULL se a partida não estiver em andamento. */
+const Pergunta *obterPerguntaAtual(const Partida *partida);
+
+/**
+ * @brief Consulta o prêmio da pergunta indicada.
+ * @param numero Número da pergunta, de 1 a 15.
+ * @return Valor em reais, ou zero para um número inválido.
+ */
+int obterPremioPergunta(int numero);
+
+/**
+ * @brief Valida A-D (maiúscula ou minúscula), aplica o prêmio e avança após acerto.
+ * @param partida Partida em andamento.
+ * @param resposta Letra escolhida pelo jogador.
+ * @return Resultado da ação. Entradas inválidas não alteram a partida.
+ */
+ResultadoResposta responderPergunta(Partida *partida, char resposta);
+
+/**
+ * @brief Encerra a partida preservando o prêmio atual.
+ * @return 1 se a desistência foi registrada; 0 se a ação não for permitida.
+ */
+int desistirPartida(Partida *partida);
+
 #endif
