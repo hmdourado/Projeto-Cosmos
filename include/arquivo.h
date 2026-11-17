@@ -27,15 +27,6 @@ int carregarCSV(Cadastro *cadastro, const char *caminho);
  * @param caminho Caminho do arquivo binário.
  * @return 1 se a leitura for realizada com sucesso; 0 caso contrário.
  */
-int carregarBinario(Cadastro *cadastro, const char *caminho);
-
-/**
- * @brief Salva as perguntas do cadastro em um arquivo binário.
- *
- * @param cadastro Ponteiro constante para o cadastro.
- * @param caminho Caminho do arquivo binário.
- * @return 1 se a gravação for realizada com sucesso; 0 caso contrário.
- */
 int salvarBinario(const Cadastro *cadastro, const char *caminho);
 
 /**
@@ -44,6 +35,16 @@ int salvarBinario(const Cadastro *cadastro, const char *caminho);
  * @param cadastro Ponteiro constante para o cadastro.
  * @param caminho Caminho do arquivo CSV de destino.
  * @return 1 se a exportação for realizada com sucesso; 0 caso contrário.
+ */
+
+int carregarBinario(Cadastro *cadastro, const char *caminho);
+
+/**
+ * @brief Salva as perguntas do cadastro em um arquivo binário.
+ *
+ * @param cadastro Ponteiro constante para o cadastro.
+ * @param caminho Caminho do arquivo binário.
+ * @return 1 se a gravação for realizada com sucesso; 0 caso contrário.
  */
 int exportarCSV(const Cadastro *cadastro, const char *caminho);
 
