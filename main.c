@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Uso: %s [arquivo.bin [arquivo.csv]]\n", argv[0]);
         return EXIT_FAILURE;
     }
-    const char *binario = argc > 1 ? argv[1] : "dados/perguntas.bin";
+    const char *binario = argc > 1 ? argv[1] : "dados/perguntas.dat";
     const char *csv = argc > 2 ? argv[2] : "dados/perguntas.csv";
 
     // Inicializa o cadastro vazio antes de tentar recuperar os dados.

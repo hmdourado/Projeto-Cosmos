@@ -80,7 +80,7 @@ int main(void){
     assert(fclose(arquivo) == 0);
 
     // Um caminho sem diretório impede a gravação e deve retornar falha.
-    argumentos[1] = "/diretorio-cosmos-inexistente/perguntas.bin";
+    argumentos[1] = "/diretorio-cosmos-inexistente/perguntas.dat";
     argumentos[2] = "dados/perguntas.csv";
     assert(mainAplicacao(3, argumentos) == EXIT_FAILURE);
     assert(chamadasMenu == 3);

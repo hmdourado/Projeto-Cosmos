@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BLOCO_PERGUNTAS 10
+
 void inicializarCadastro (Cadastro *cadastro){
     //Verificação para evitar acesssar estrutura inexistente.
     if (cadastro == NULL){
@@ -40,7 +42,7 @@ int adicionarPergunta(Cadastro *cadastro, const Pergunta *pergunta){
     if (cadastro->quantidade == cadastro->capacidade){
 
         // Calcula a nova capacidade, adicionando 10 posições.
-        size_t novaCapacidade = cadastro->capacidade + 10;
+        size_t novaCapacidade = cadastro->capacidade + BLOCO_PERGUNTAS;
 
         // Realoca a memória para comportar a nova capacidade.
         Pergunta *temp = realloc(cadastro->perguntas, sizeof(Pergunta) * novaCapacidade);
@@ -138,6 +140,17 @@ int removerPergunta(Cadastro *cadastro, int id){
 
     // Atualiza a quantidade de perguntas cadastradas.
     cadastro->quantidade--;
+
+    if (cadastro->quantidade == 0){
+        liberarCadastro(cadastro);
+    } else if (cadastro->capacidade - cadastro->quantidade >= 2 * BLOCO_PERGUNTAS){
+        size_t novaCapacidade = cadastro->capacidade - BLOCO_PERGUNTAS;
+        Pergunta *temp = realloc(cadastro->perguntas, sizeof(Pergunta) * novaCapacidade);
+        if (temp != NULL){
+            cadastro->perguntas = temp;
+            cadastro->capacidade = novaCapacidade;
+        }
+    }
 
     // Indica que a remoção foi realizada com sucesso.
     return 1;
