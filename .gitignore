@@ -23,6 +23,10 @@
 *.la
 *.lo
 
+# Raylib static libraries used by the portable Makefile
+!lib/libraylib.a
+!lib/libraylib_win64.a
+
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
