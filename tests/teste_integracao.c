@@ -103,6 +103,43 @@ static void verificarGravacao(const char *caminho){
     liberarCadastro(&cadastro);
 }
 
+static void testarCamposCSV(const char *caminho){
+    Cadastro original;
+    Cadastro reimportado;
+    inicializarCadastro(&original);
+    inicializarCadastro(&reimportado);
+    assert(carregarCSV(&original, "dados/perguntas.csv"));
+
+    Pergunta *pergunta = &original.perguntas[0];
+    strcpy(pergunta->enunciado, "\"Terra, Lua\"\nQual é a ordem?");
+    strcpy(pergunta->alternativas[0], "Terra, Lua");
+    assert(exportarCSV(&original, caminho));
+    assert(carregarCSV(&reimportado, caminho));
+    assert(reimportado.quantidade == original.quantidade);
+    for (size_t i = 0; i < original.quantidade; i++){
+        const Pergunta *esperada = &original.perguntas[i];
+        const Pergunta *lida = &reimportado.perguntas[i];
+        assert(lida->id == esperada->id && lida->nivel == esperada->nivel);
+        assert(lida->respostaCorreta == esperada->respostaCorreta);
+        assert(strcmp(lida->enunciado, esperada->enunciado) == 0);
+        for (int j = 0; j < QUANT_ALTERNATIVAS; j++){
+            assert(strcmp(lida->alternativas[j], esperada->alternativas[j]) == 0);
+        }
+    }
+
+    // Um campo sem aspas de fechamento deve rejeitar toda a importação.
+    FILE *arquivo = fopen(caminho, "a");
+    assert(arquivo != NULL);
+    assert(fputs("81,1,\"Campo, sem fechamento", arquivo) >= 0);
+    assert(fclose(arquivo) == 0);
+    assert(!carregarCSV(&reimportado, caminho));
+    assert(reimportado.quantidade == original.quantidade);
+
+    liberarCadastro(&original);
+    liberarCadastro(&reimportado);
+    assert(remove(caminho) == 0);
+}
+
 int main(void){
     // Isola todos os arquivos gerados, sem modificar o banco real do projeto.
     char diretorio[260];
@@ -110,10 +147,13 @@ int main(void){
     char binario[256];
     char ausente[256];
     char caminhoInvalido[256];
+    char csvExportado[300];
     snprintf(binario, sizeof(binario), "%s/perguntas.bin", diretorio);
     snprintf(ausente, sizeof(ausente), "%s/ausente.csv", diretorio);
     snprintf(caminhoInvalido, sizeof(caminhoInvalido),
              "%s/inexistente/perguntas.dat", diretorio);
+    snprintf(csvExportado, sizeof(csvExportado), "%s/exportado.csv", diretorio);
+    testarCamposCSV(csvExportado);
     char *argumentos[] = {"cosmos", binario, "dados/perguntas.csv", NULL};
 
     // Primeira execução: importa o CSV, chama o menu e cria o binário.

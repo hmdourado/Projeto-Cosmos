@@ -49,6 +49,33 @@ A estrutura pode ser ampliada conforme a implementação dos módulos e das func
 
 ## Como compilar e executar
 
+### Versão de terminal
+
+Na raiz do projeto, com um compilador C11 e Make:
+
+```sh
+make run-terminal
+make test
+```
+
+`make run-terminal` compila e abre o jogo no próprio terminal. `make test` executa os testes sem abrir uma janela. No Windows com MinGW, use `mingw32-make run-terminal CC=gcc` e `mingw32-make test CC=gcc` se essa for a instalação disponível.
+
+Para fazer a demonstração com arquivos separados dos dados padrão, use:
+
+```sh
+COSMOS_RANKING=build/ranking-demo.tsv make run-terminal \
+  ARGS="build/perguntas-demo.dat dados/perguntas.csv"
+```
+
+No PowerShell, configure primeiro `$env:COSMOS_RANKING = 'build/ranking-demo.tsv'` e passe os mesmos caminhos em `ARGS`.
+
+| Comando | Resultado |
+| --- | --- |
+| `make run-terminal` | Compila e executa a versão de texto, sem vincular a Raylib. |
+| `make test` | Executa as suítes de jogo, ajudas e integração de arquivos. |
+
+A versão gráfica requer uma Raylib compatível com o sistema. O Makefile usa uma biblioteca para Windows ou opções de ligação de Linux. No macOS, a configuração padrão pode falhar com `library 'GL' not found`. O alvo de terminal funciona sem essas bibliotecas gráficas.
+
 ### Windows
 
 **Pré-requisitos**
@@ -124,6 +151,76 @@ O banco inicial de perguntas é fornecido em CSV. O sistema também prevê salva
 ## Desenvolvimento e qualidade
 
 O código é dividido em arquivos `.c` e `.h`, com responsabilidades separadas por módulo. A implementação deve manter nomes descritivos, indentação consistente, tratamento de erros, gerenciamento correto de memória e documentação das funções no padrão **Doxygen**, conforme as orientações da disciplina.
+
+## Como jogar
+
+- No menu principal, use **1** para jogar, **2** para gerenciar perguntas, **3** para consultar o ranking e **0** para salvar e sair.
+- Na partida, responda com **A–D**, acione as ajudas com **1–4** ou pressione **S** para desistir. Cada ajuda pode ser usada uma vez por partida.
+- Ao final, informe um nome para registrar o resultado ou pressione Enter para pular. O ranking mostra até dez resultados, ordenados pelo prêmio final e pelo número de acertos. Empates mantêm a ordem de registro.
+
+Acertar a quinta pergunta garante **R$ 5.000**. Acertar a décima garante **R$ 50.000**. Uma resposta errada encerra a partida com o último valor garantido. Desistir preserva o prêmio atual. O 15º acerto encerra a partida com **R$ 1.000.000**. A tabela completa, os efeitos das ajudas e a API para a interface estão em [Regras do jogo e integração](docs/regras.md).
+
+## Arquitetura e conceitos de programação
+
+`main.c` coordena o fluxo abaixo. O Makefile seleciona qual implementação de `executarMenu` será vinculada ao executável.
+
+```text
+Inicializar Cadastro → tentar carregar o binário → importar CSV se necessário
+                              ↓
+           executarMenu → cadastro / partida / ranking
+                              ↓
+                      salvar binário → liberar memória
+```
+
+| Módulo | Responsabilidade | Conceitos aplicados |
+| --- | --- | --- |
+| [Pergunta](include/pergunta.h) | Representa e valida enunciado, quatro alternativas, dificuldade e gabarito. | `struct`, `enum`, arrays de caracteres e validação. |
+| [Cadastro](include/cadastro.h) | Controla as perguntas e permite inserir, buscar, alterar e remover. | Ponteiros, vetor dinâmico, `realloc` e `free`. |
+| [Arquivo](include/arquivo.h) | Importa e exporta CSV, salva e carrega o binário. | `FILE *`, E/S de texto e binária, tratamento de erros. |
+| [Jogo](include/jogo.h) | Sorteia as perguntas e controla respostas, prêmios e estados finais. | Amostragem sem repetição, arrays e máquina de estados. |
+| [Ajuda](include/ajuda.h) e [pistas](src/pistas.c) | Controlam usos, eliminam alternativas e fornecem pistas, contexto e sugestões. | Vetores de estado, busca por ID e sorteio. |
+| [Ranking](include/ranking.h) | Registra resultados e devolve as dez melhores posições. | Histórico em arquivo e inserção ordenada em vetor limitado. |
+| [Menu de terminal](src/menu_temporario.c) e [menu Raylib](src/menu.c) | Implementam a entrada e a saída de cada interface. | Separação da interface e das regras, compilação por módulos. |
+
+### Como os dados são mantidos
+
+**Cadastro.** `Cadastro` guarda um ponteiro para o vetor, a quantidade ocupada e a capacidade reservada. Quando o vetor enche, `adicionarPergunta` tenta ampliar a capacidade em dez posições. O resultado de `realloc` é guardado em um ponteiro temporário para preservar o vetor original caso falte memória. Ao encerrar, `liberarCadastro` libera o vetor. A busca por ID é linear.
+
+**Partida.** `iniciarPartida` confere a quantidade disponível em cada dificuldade antes de sortear. Para cada nível, preenche as vagas iniciais e usa amostragem por reservatório para dar aos registros seguintes a chance de substituir uma vaga. Em seguida, embaralha as escolhidas dentro do mesmo nível. `Partida` guarda cópias das 15 perguntas, o índice atual, os acertos, o prêmio atual e o garantido. Assim, a partida tem os dados necessários mesmo depois de liberar o cadastro. Um acerto comum avança, o último acerto vence, um erro causa derrota e a desistência encerra preservando o valor acumulado.
+
+**Ajudas.** O uso de cada ajuda vale para toda a partida. Os efeitos na tela valem para a pergunta atual. Ao avançar, o jogo limpa as alternativas eliminadas e as sugestões, mas mantém registrados os usos já gastos. Missão Espacial e Telescópio preservam o uso quando falta conteúdo para a pergunta.
+
+### Arquivos
+
+| Arquivo | Uso |
+| --- | --- |
+| `dados/perguntas.csv` | Banco inicial. As colunas são ID, nível, enunciado, quatro alternativas e letra correta. Campos textuais entre aspas podem conter vírgulas, aspas duplicadas e quebras de linha. |
+| `dados/perguntas.dat` | Cadastro carregado primeiro. O programa lê a quantidade e os registros binários de `Pergunta`. Como o formato grava estruturas C diretamente, a compatibilidade depende da representação usada pela compilação. |
+| `dados/ranking.tsv` | Histórico local com estado final, prêmio, acertos e nome, separados por tabulações. `COSMOS_RANKING` permite usar outro arquivo. |
+
+## Verificação e roteiro de apresentação
+
+| Suíte de `make test` | O que verifica |
+| --- | --- |
+| [Jogo](tests/test_jogo.c) | Sorteio, distribuição, IDs únicos, cadastro insuficiente, entradas inválidas, progressão, marcos, vitória, derrota e desistência. |
+| [Ajudas](tests/test_ajuda.c) | Disponibilidade, limites de uso, bloqueio de alternativas eliminadas, textos, interação entre as ajudas e reinício. |
+| [Integração](tests/teste_integracao.c) | Primeira execução via CSV, recarga pelo binário, recuperação de binário truncado, erros de gravação e preservação de vírgulas, aspas e quebras de linha no CSV. |
+
+Sugestão para dividir a demonstração entre os três integrantes:
+
+1. **Cadastro e arquivos.** Inicie com o caminho de demonstração, mostre as 80 perguntas e abra o menu de cadastro. Mostre uma exportação e explique por que o CSV é lido quando o binário ainda não existe.
+2. **Interface e integração.** Mostre o papel de `executarMenu` e em que ponto a interface recebe o cadastro. Use o terminal para demonstrar o fluxo integrado e apresente a janela Raylib conforme o estágio atual.
+3. **Regras, ajudas e ranking.** Inicie uma partida, use a Supernova para mostrar duas alternativas eliminadas e tente reutilizá-la. Encerre a partida, registre o nome, abra o ranking e execute `make test` para mostrar como os marcos e os estados finais são verificados.
+
+## Referência Doxygen
+
+Com o Doxygen instalado, execute na raiz:
+
+```sh
+doxygen Doxyfile
+```
+
+Abra `build/doxygen/html/index.html` para consultar as estruturas, funções e arquivos do projeto. A configuração inclui os cabeçalhos e fontes do Cosmos e exclui os cabeçalhos de terceiros.
 
 ## Contexto acadêmico
 

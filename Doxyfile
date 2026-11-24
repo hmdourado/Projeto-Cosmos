@@ -1,0 +1,13 @@
+PROJECT_NAME           = "Jogo do Milhão Cósmico"
+PROJECT_BRIEF          = "Projeto de Fundamentos de Programação 2"
+OUTPUT_DIRECTORY       = build/doxygen
+OUTPUT_LANGUAGE        = Brazilian
+INPUT                  = README.md main.c include src docs
+USE_MDFILE_AS_MAINPAGE = README.md
+FILE_PATTERNS          = *.c *.h *.md
+RECURSIVE              = YES
+EXCLUDE_PATTERNS       = */raylib.h */raygui.h */raymath.h */rlgl.h
+OPTIMIZE_OUTPUT_FOR_C  = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HAVE_DOT               = NO

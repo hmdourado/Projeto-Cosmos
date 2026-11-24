@@ -10,90 +10,106 @@
  */
 
 #include "../include/arquivo.h"
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-// Define a quantidade máxima de caracteres armazenados em uma linha do CSV.
-#define TAM_LINHA_CSV 1024
+/** Lê um campo e devolve o separador que o encerrou. */
+static int lerCampoCSV(FILE *arquivo, char *campo, size_t capacidade, int *separador){
+    size_t tamanho = 0;
+    int caractere = fgetc(arquivo);
+
+    if (caractere == '"'){
+        for (;;){
+            caractere = fgetc(arquivo);
+            if (caractere == EOF || caractere == '\0'){
+                return 0;
+            }
+            if (caractere == '"'){
+                caractere = fgetc(arquivo);
+                if (caractere != '"'){
+                    break;
+                }
+            }
+            if (tamanho == capacidade - 1){
+                return 0;
+            }
+            campo[tamanho++] = (char)caractere;
+        }
+    } else {
+        while (caractere != ',' && caractere != '\n' && caractere != '\r' && caractere != EOF){
+            if (tamanho == capacidade - 1 || caractere == '\0'){
+                return 0;
+            }
+            campo[tamanho++] = (char)caractere;
+            caractere = fgetc(arquivo);
+        }
+    }
+
+    campo[tamanho] = '\0';
+    *separador = caractere;
+    return !ferror(arquivo);
+}
+
+static int lerInteiroCSV(FILE *arquivo, int *valor){
+    char campo[sizeof(int) * CHAR_BIT + 2];
+    int separador;
+    if (!lerCampoCSV(arquivo, campo, sizeof(campo), &separador) || separador != ','){
+        return 0;
+    }
+    char *fim;
+    errno = 0;
+    long numero = strtol(campo, &fim, 10);
+    if (fim == campo || *fim != '\0' || errno == ERANGE || numero < INT_MIN || numero > INT_MAX){
+        return 0;
+    }
+    *valor = (int)numero;
+    return 1;
+}
 
 /**
- * @brief Interpreta uma linha do arquivo CSV e preenche uma estrutura Pergunta.
+ * @brief Interpreta um registro do arquivo CSV e preenche uma estrutura Pergunta.
  *
- * @param linha String contendo os dados da pergunta separados por vírgulas.
+ * @param arquivo Arquivo posicionado no início do registro.
  * @param pergunta Ponteiro para a estrutura que receberá os dados.
  * @return 1 se a interpretação e validação forem realizadas com sucesso; 0 caso contrário.
  */
-static int interpretarLinhaCSV(char *linha, Pergunta *pergunta){
-    // Verifica se os ponteiros recebidos são válidos.
-    if (linha == NULL || pergunta == NULL){
-        return 0;
-    }
-
+static int lerPerguntaCSV(FILE *arquivo, Pergunta *pergunta){
     // Inicializa a estrutura da pergunta, definindo seus valores iniciais.
     inicializarPergunta(pergunta);
-
-    // Remove os caracteres de quebra de linha (\n ou \r) do final da string.
-    linha[strcspn(linha, "\r\n")] = '\0';
-
-    // Obtém o primeiro campo da linha, correspondente ao identificador da pergunta.
-    char *campo = strtok(linha, ",");
-
-    // Verifica se o campo foi encontrado.
-    if (campo == NULL){
+    int nivel;
+    int separador;
+    // Lê o identificador, o nível de dificuldade e o enunciado.
+    if (!lerInteiroCSV(arquivo, &pergunta->id) || !lerInteiroCSV(arquivo, &nivel) ||
+        nivel < MUITO_FACIL || nivel > MUITO_DIFICIL ||
+        !lerCampoCSV(arquivo, pergunta->enunciado, sizeof(pergunta->enunciado), &separador) ||
+        separador != ','){
         return 0;
     }
-
-    // Converte o identificador de texto para inteiro.
-    pergunta->id = atoi(campo);
-
-    // Obtém o segundo campo, correspondente ao nível de dificuldade.
-    campo = strtok(NULL, ",");
-
-    // Verifica se o campo foi encontrado.
-    if (campo == NULL){
-        return 0;
-    }
-
-    // Converte o nível de dificuldade para inteiro e realiza a conversão para o tipo enumerado.
-    pergunta->nivel = (NivelDificuldade)atoi(campo);
-
-    // Obtém o terceiro campo, correspondente ao enunciado da pergunta.
-    campo = strtok(NULL, ",");
-
-    // Verifica se o campo existe e se seu conteúdo cabe no array de destino.
-    if (campo == NULL || strlen(campo) >= TAM_ENUNCIADO){
-        return 0;
-    }
-
-    // Copia o enunciado para a estrutura da pergunta.
-    strcpy(pergunta->enunciado, campo);
+    pergunta->nivel = (NivelDificuldade)nivel;
 
     // Percorre as quatro alternativas da pergunta.
     for (int i = 0; i < QUANT_ALTERNATIVAS; i++){
-
-        // Obtém o próximo campo correspondente a uma alternativa.
-        campo = strtok(NULL, ",");
-
-        // Verifica se o campo existe e se seu conteúdo cabe no array de destino.
-        if (campo == NULL || strlen(campo) >= TAM_ALTERNATIVA){
+        if (!lerCampoCSV(arquivo, pergunta->alternativas[i], sizeof(pergunta->alternativas[i]), &separador) ||
+            separador != ','){
             return 0;
         }
-
-        // Copia a alternativa para a posição correspondente no array.
-        strcpy(pergunta->alternativas[i], campo);
     }
 
     // Obtém o último campo, correspondente à resposta correta.
-    campo = strtok(NULL, ",");
-
-    // Verifica se o campo existe e contém exatamente um caractere.
-    if (campo == NULL || strlen(campo) != 1){
+    char resposta[2];
+    if (!lerCampoCSV(arquivo, resposta, sizeof(resposta), &separador)){
         return 0;
     }
-
+    if (separador == '\r'){
+        separador = fgetc(arquivo);
+    }
+    if (separador != '\n' && separador != EOF){
+        return 0;
+    }
     // Armazena o caractere da resposta correta na estrutura.
-    pergunta->respostaCorreta = campo[0];
+    pergunta->respostaCorreta = resposta[0];
 
     // Verifica se todos os dados preenchidos atendem aos critérios de validação.
     return validarPergunta(pergunta);
@@ -101,48 +117,43 @@ static int interpretarLinhaCSV(char *linha, Pergunta *pergunta){
 
 int carregarCSV(Cadastro *cadastro, const char *caminho){
     // Verifica se os parâmetros recebidos são válidos.
-    if (cadastro == NULL || cadastro == NULL){
+    if (cadastro == NULL || caminho == NULL){
         return 0;
     }
-
     // Abre o arquivo no modo de leitura.
-    FILE *arquivo = fopen(caminho, "r");
+    FILE *arquivo = fopen(caminho, "rb");
 
     // Verifica se o arquivo foi aberto corretamente.
     if (arquivo == NULL){
         return 0;
     }
 
-    // Declara o buffer utilizado para armazenar temporariamente cada linha do CSV.
-    char linha[TAM_LINHA_CSV];
-
     // Realiza a leitura do cabeçalho para que ele não seja interpretado como uma pergunta.
-    if (fgets(linha, sizeof(linha), arquivo) == NULL){
-        fclose(arquivo);
-        return 0;
+    int caractere = fgetc(arquivo);
+    int sucesso = caractere != EOF;
+    while (caractere != '\n' && caractere != EOF){
+        caractere = fgetc(arquivo);
     }
 
-    // Percorre todas as linhas restantes do arquivo até atingir o final.
-    while (fgets(linha, sizeof(linha), arquivo) != NULL){
+    size_t quantidadeOriginal = cadastro->quantidade;
 
+    // Percorre todos os registros restantes do arquivo até atingir o final.
+    while (sucesso && (caractere = fgetc(arquivo)) != EOF){
         // Declara uma estrutura temporária para armazenar os dados da pergunta atual.
         Pergunta pergunta;
 
-        // Interpreta os campos da linha e verifica se os dados são válidos.
-        if (!interpretarLinhaCSV(linha, &pergunta)){
-            fclose(arquivo);
-            return 0;
-        }
-
-        // Adiciona a pergunta interpretada ao cadastro, utilizando o vetor dinâmico.
-        if (!adicionarPergunta(cadastro, &pergunta)){
-            fclose(arquivo);
-            return 0;
-        }
+        // Interpreta os campos e adiciona a pergunta ao cadastro se os dados forem válidos.
+        sucesso = ungetc(caractere, arquivo) != EOF &&
+            lerPerguntaCSV(arquivo, &pergunta) &&
+            adicionarPergunta(cadastro, &pergunta);
     }
 
     // Fecha o arquivo após finalizar a leitura dos registros.
-    fclose(arquivo);
+    sucesso = sucesso && !ferror(arquivo);
+    if (fclose(arquivo) != 0 || !sucesso){
+        cadastro->quantidade = quantidadeOriginal;
+        return 0;
+    }
 
     // Retorna 1 indicando que o carregamento foi concluído.
     return 1;
@@ -237,6 +248,20 @@ int carregarBinario(Cadastro *cadastro, const char *caminho){
     return 1;
 }
 
+/** Escreve um campo textual entre aspas, duplicando aspas literais. */
+static int escreverCampoCSV(FILE *arquivo, const char *campo){
+    if (fputc('"', arquivo) == EOF){
+        return 0;
+    }
+    for (; *campo != '\0'; campo++){
+        if ((*campo == '"' && fputc('"', arquivo) == EOF) ||
+            fputc((unsigned char)*campo, arquivo) == EOF){
+            return 0;
+        }
+    }
+    return fputs("\",", arquivo) != EOF;
+}
+
 int exportarCSV(const Cadastro *cadastro, const char *caminho){
     // Verifica se os parâmetros recebidos são válidos.
     if (cadastro == NULL || caminho == NULL ||
@@ -245,7 +270,7 @@ int exportarCSV(const Cadastro *cadastro, const char *caminho){
     }
 
     // Abre o arquivo no modo de escrita.
-    FILE *arquivo = fopen(caminho, "w");
+    FILE *arquivo = fopen(caminho, "wb");
 
     // Verifica se o arquivo foi aberto corretamente.
     if (arquivo == NULL){
@@ -270,15 +295,12 @@ int exportarCSV(const Cadastro *cadastro, const char *caminho){
         const Pergunta *pergunta = &cadastro->perguntas[i];
 
         // Escreve os dados da pergunta no formato CSV.
-        if (fprintf(arquivo, "%d,%d,%s,%s,%s,%s,%s,%c\n",
-            pergunta->id,
-            pergunta->nivel,
-            pergunta->enunciado,
-            pergunta->alternativas[0],
-            pergunta->alternativas[1],
-            pergunta->alternativas[2],
-            pergunta->alternativas[3],
-            pergunta->respostaCorreta) < 0){
+        int sucesso = fprintf(arquivo, "%d,%d,", pergunta->id, pergunta->nivel) >= 0 &&
+            escreverCampoCSV(arquivo, pergunta->enunciado);
+        for (int j = 0; sucesso && j < QUANT_ALTERNATIVAS; j++){
+            sucesso = escreverCampoCSV(arquivo, pergunta->alternativas[j]);
+        }
+        if (!sucesso || fprintf(arquivo, "%c\n", pergunta->respostaCorreta) < 0){
 
             // Fecha o arquivo em caso de falha.
             fclose(arquivo);
@@ -288,7 +310,5 @@ int exportarCSV(const Cadastro *cadastro, const char *caminho){
     }
 
     // Fecha o arquivo após concluir a exportação.
-    fclose(arquivo);
-
-    return 1;
+    return fclose(arquivo) == 0;
 }
