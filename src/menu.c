@@ -1,7 +1,22 @@
-
+/**
+ * @file menu.c 
+ * @author Arthur Morais Palitot Fernandes (arthurpalitot@gmail.com | arthurmoraisfernandes@alunos.utfpr.edu.br)
+ * @brief 
+ * @version 0.1
+ * @date 23-11-2026
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+ */
 #include "../include/raylib.h"
 #include "../include/video.h"
 #include "../include/menu.h"
+
+/**
+ * @brief Executa Menu 
+ * 
+ * @param cadastro 
+ */
 
 void executarMenu(Cadastro *cadastro)
 {
@@ -13,6 +28,7 @@ void executarMenu(Cadastro *cadastro)
 
     VideoBackground fundo;
 
+    //verifica se o video Init retorna False e seta erro 
     if (!VideoInit(&fundo, "assets/14014441_1280_720_30fps.mp4"))
     {
         TraceLog(LOG_ERROR, "Erro ao inicializar video!");
@@ -20,6 +36,7 @@ void executarMenu(Cadastro *cadastro)
         return;
     }
     TraceLog(LOG_INFO, "Video inicializado com sucesso!");
+    
     while (!WindowShouldClose())
     {
         // Atualização
