@@ -65,6 +65,17 @@ A estrutura pode ser ampliada conforme a implementação dos módulos e das func
 **Verificar as ferramentas** em um novo PowerShell:
 
 ```powershell
+where.exe gcc
+gcc --version
+gcc -dumpmachine
+where.exe mingw32-make
+```
+
+O compilador deve ser MinGW-w64 de 64 bits (`x86_64-w64-mingw32`).
+
+**Compilar e executar**, a partir da raiz do repositório:
+
+```powershell
 # Compilar
 mingw32-make
 
@@ -73,16 +84,6 @@ mingw32-make run
 
 # Limpar arquivos gerados
 mingw32-make clean
-```
-
-O compilador deve ser MinGW-w64 de 64 bits (`x86_64-w64-mingw32`).
-
-**Compilar e executar**, a partir da raiz do repositório:
-
-```powershell
-mingw32-make clean
-mingw32-make CC=gcc
-.\build\cosmos.exe
 ```
 
 O comando `mingw32-make run CC=gcc` também pode ser utilizado quando o alvo `run` do `Makefile` estiver configurado para executar o binário com a sintaxe do Windows.
