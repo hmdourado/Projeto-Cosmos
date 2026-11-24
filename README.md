@@ -65,10 +65,14 @@ A estrutura pode ser ampliada conforme a implementação dos módulos e das func
 **Verificar as ferramentas** em um novo PowerShell:
 
 ```powershell
-where.exe gcc
-gcc --version
-gcc -dumpmachine
-where.exe mingw32-make
+# Compilar
+mingw32-make
+
+# Executar
+mingw32-make run
+
+# Limpar arquivos gerados
+mingw32-make clean
 ```
 
 O compilador deve ser MinGW-w64 de 64 bits (`x86_64-w64-mingw32`).
