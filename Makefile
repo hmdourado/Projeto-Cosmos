@@ -16,6 +16,7 @@ EXE_EXT = .exe
 RAYLIB_LIBS ?= lib/libraylib_win64.a -lopengl32 -lgdi32 -lwinmm
 else
 EXE_EXT =
+CPPFLAGS += -D_POSIX_C_SOURCE=200809L
 RAYLIB_LIBS ?= lib/libraylib.a -lGL -lm -lpthread -ldl -lrt -lX11
 endif
 
