@@ -23,6 +23,9 @@
 void executarMenu(Cadastro *cadastro)
 {
     (void)cadastro; // Evita warning enquanto não utilizamos o cadastro.
+    
+    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
+    SetConfigFlags(FLAG_FULLSCREEN_MODE);
 
     InitWindow(1280, 720, "Cosmos");
     //fontes
@@ -30,21 +33,23 @@ void executarMenu(Cadastro *cadastro)
     //fonteCosmos = LoadFontEx("assets/fonts/Nasalization Rg.otf");
 
     Font fonteCosmos = LoadFontEx(
-        "assets/fonts/Nasalization Rg.otf",
+        "assets/fonts/spacerangerlaser.ttf",
         128,    // Resolução de carregamento
         NULL,
         0
     );
 
     SetTextureFilter(fonteCosmos.texture, TEXTURE_FILTER_BILINEAR);
-    
-    Font fonteMenuSecundaria = LoadFontEx(
+    /*
+     Font fonteMenuSecundaria = LoadFontEx(
         "assets/fonts/",
         128,
         NULL,
         0
     );
-    SetTextureFilter(fonteMenuSecundaria.texture, TEXTURE_FILTER_BILINEAR);
+    */
+   
+    //SetTextureFilter(fonteMenuSecundaria.texture, TEXTURE_FILTER_BILINEAR);
 
     SetTargetFPS(60);
 
@@ -76,7 +81,7 @@ void executarMenu(Cadastro *cadastro)
             DrawTextEx(
                 fonteCosmos,
                 "COSMOS",
-                 (Vector2){ 450, 50 },
+                 (Vector2){415,50},
                  100,       // Tamanho da fonte
                  2,
                  WHITE

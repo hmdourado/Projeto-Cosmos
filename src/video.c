@@ -40,7 +40,7 @@
 
 #define VIDEO_LARGURA 1280
 #define VIDEO_ALTURA 720
-#define VIDEO_FPS 24
+#define VIDEO_FPS 30
 
 /**
  * @brief Le exatamente um frame do processo ffmpeg
@@ -224,6 +224,9 @@ void VideoUpdate(VideoBackground *video)
  * 
  * @param video 
  */
+
+
+ /*
 void VideoDraw(VideoBackground *video)
 {
     if (video == NULL || video->textura.id == 0)
@@ -246,7 +249,44 @@ void VideoDraw(VideoBackground *video)
         WHITE
     );
 }
+*/
 
+void VideoDraw(VideoBackground *video)
+{
+    float larguraTela = (float)GetScreenWidth();
+    float alturaTela = (float)GetScreenHeight();
+
+    float escalaX = larguraTela / video->largura;
+    float escalaY = alturaTela / video->altura;
+
+    // Escolhe a menor escala para não distorcer nem cortar o vídeo.
+    float escala = escalaX < escalaY ? escalaX : escalaY;
+
+    float largura = video->largura * escala;
+    float altura = video->altura * escala;
+
+    Rectangle destino = {
+        (larguraTela - largura) / 2.0f,
+        (alturaTela - altura) / 2.0f,
+        largura,
+        altura
+    };
+
+    Rectangle origem = {
+        0, 0,
+        (float)video->largura,
+        (float)video->altura
+    };
+
+    DrawTexturePro(
+        video->textura,
+        origem,
+        destino,
+        (Vector2){0, 0},
+        0.0f,
+        WHITE
+    );
+}
 /**
  * @brief Libera os recursos.
  * 
