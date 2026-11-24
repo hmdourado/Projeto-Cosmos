@@ -76,14 +76,14 @@ O compilador deve ser MinGW-w64 de 64 bits (`x86_64-w64-mingw32`).
 **Compilar e executar**, a partir da raiz do repositório:
 
 ```powershell
+# Limpar arquivos gerados
+mingw32-make clean
+
 # Compilar
 mingw32-make
 
 # Executar
 mingw32-make run
-
-# Limpar arquivos gerados
-mingw32-make clean
 ```
 
 O comando `mingw32-make run CC=gcc` também pode ser utilizado quando o alvo `run` do `Makefile` estiver configurado para executar o binário com a sintaxe do Windows.
@@ -105,14 +105,14 @@ Também é necessário ter uma versão da Raylib compilada/instalada para Linux 
 **Compilar e executar**, depois de configurar a biblioteca e o alvo Linux no `Makefile`:
 
 ```bash
+# Limpar arquivos gerados
+make clean
+
 # Compilar
 make
 
 # Executar
 make run
-
-# Limpar arquivos gerados
-make clean
 ```
 
 > **Nota sobre suporte multiplataforma:** a configuração de ligação atualmente registrada no `Makefile` utiliza a biblioteca `lib/libraylib_win64.a` e bibliotecas de sistema do Windows. Esse arquivo não pode ser usado em Linux. Portanto, a compilação Linux depende de uma configuração específica para Raylib/Linux no `Makefile`; ainda não está validada nesta versão do projeto.
