@@ -34,15 +34,55 @@ Esta é uma adaptação provisória para o grupo validar, sem afirmar equivalên
 
 ## Integração
 
-`obterPerguntaAtual` retorna NULL fora de uma partida em andamento.
-`responderPergunta` retorna o resultado da ação e avança automaticamente após
-acerto, exceto na última pergunta, que encerra com vitória. A interface deve
-guardar as informações necessárias ao feedback antes de chamar a função.
-`premioAtual` representa o prêmio final após qualquer encerramento.
+O menu em `src/menu_temporario.c` é uma referência de integração para o
+Integrante 2. As funções públicas estão em `include/jogo.h` e `include/ajuda.h`.
 
-Execute `make run`, escolha 1 para jogar e 0 para salvar e sair do programa.
-Execute `make test` para verificar a lógica e a integração de arquivos.
-Buraco Negro e ranking serão adicionados em etapas posteriores.
+| Ação da interface | Função e resultado |
+| --- | --- |
+| Começar uma partida | Chame `iniciarPartida(&partida, cadastro)`. Com `INICIO_SUCESSO`, o estado é `PARTIDA_EM_ANDAMENTO`. Trate `INICIO_PERGUNTAS_INSUFICIENTES` e os erros de cadastro ou parâmetros antes de abrir a partida. |
+| Exibir a rodada | Use `obterPerguntaAtual(&partida)`. Ela retorna `NULL` fora de uma partida em andamento. Mostre a rodada com `indiceAtual + 1` e o valor em disputa com `obterPremioPergunta(indiceAtual + 1)`. |
+| Receber uma resposta | Chame `responderPergunta(&partida, letra)`. `RESPOSTA_CORRETA` já avança. `RESPOSTA_INCORRETA` encerra em derrota e `RESPOSTA_VITORIA` encerra após o 15º acerto. Trate entradas inválidas ou ações fora da partida sem avançar. Se for mostrar o gabarito, guarde-o antes da chamada. |
+| Usar uma ajuda | Chame `usarAjuda(&partida, tipo)`. Após `AJUDA_SUCESSO`, consulte `partida.ajudas` para ocultar alternativas eliminadas e exibir os efeitos ativos. Use `obterTextoAjuda` para buscar o texto da Missão ou do Telescópio. Trate `AJUDA_JA_USADA` e `AJUDA_SEM_CONTEUDO` com mensagens próprias. |
+| Desistir ou exibir o resultado | `desistirPartida(&partida)` retorna 1 e muda o estado para `PARTIDA_DESISTENCIA` se houver uma partida em andamento. Ao encerrar, consulte `partida.estado`, `partida.acertos` e `partida.premioAtual`. |
+
+### Testes no terminal
+
+Na raiz do projeto, compile e execute a versão de entrega no terminal:
+
+```sh
+COSMOS_RANKING=build/ranking-teste.tsv make run-terminal \
+  ARGS="build/perguntas-teste.dat dados/perguntas.csv"
+```
+
+No Windows com MinGW, use `mingw32-make` se esse for o comando instalado e
+configure `$env:COSMOS_RANKING` no PowerShell.
+
+Para executar a interface gráfica, use `make run` com as opções de
+vinculação da Raylib para seu sistema. Ambos os menus fornecem `executarMenu`,
+e o ponto de chamada permanece em `main.c`.
+`make test` continua disponível para os testes de jogo, ajudas e integração.
+
+1. Escolha **1** no menu principal para iniciar. Na partida, use **1–4** para
+   acionar as ajudas e repita uma tecla para conferir o limite de uso.
+2. Envie uma alternativa disponível (**A–D**). Um acerto avança e um erro
+   mostra o resultado final. A suíte automatizada cobre a vitória e os prêmios
+   em cada ponto de derrota ou desistência.
+3. Inicie outra partida, pressione **S** para desistir, informe um nome e
+   selecione **3** no menu para consultar o ranking. Saia com **0** e abra
+   de novo usando os mesmos caminhos para conferir a persistência.
+
+### Escopo do ranking
+
+O ranking registra vitórias, derrotas e desistências quando o jogador informa
+um nome ao final. Pressionar Enter no campo permite pular o registro. Cada
+resultado guarda nome, prêmio final, total de acertos e estado final. A
+classificação exibe até 10 resultados, por maior prêmio e depois maior número
+de acertos. Em caso de empate, vale a ordem de registro.
+
+O histórico local fica em `dados/ranking.tsv`. A variável `COSMOS_RANKING`
+permite escolher outro arquivo para o terminal. Para a futura interface gráfica,
+`include/ranking.h` oferece `registrarResultadoRanking` e `consultarRanking`,
+sem dependência de interface. Buraco Negro fica para uma etapa posterior.
 
 ## Ajudas
 

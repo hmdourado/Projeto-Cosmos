@@ -7,8 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "include/raylib.h"
-#include "include/video.h"
+// A compilação escolhe o menu que fornece executarMenu():
+// terminal: src/menu_temporario.c; gráfico: src/menu.c (veja docs/regras.md).
+// #include "include/raylib.h"
+// #include "include/video.h"
 
 int main(int argc, char *argv[]){
     // Permite informar caminhos alternativos para testes e execução.

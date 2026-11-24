@@ -5,6 +5,7 @@
 #include "../include/arquivo.h"
 #include "../include/menu.h"
 #include "../include/jogo.h"
+#include "../include/ranking.h"
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -227,7 +228,7 @@ static void visualizarPorDificuldade(const Cadastro *cadastro){
     // Permite navegar pelas perguntas encontradas.
     for (;;){
 
-        const Pergunta *pergunta = &cadastro->perguntas[indice];
+        Pergunta *pergunta = &cadastro->perguntas[indice];
 
         printf("\nID: %d\n", pergunta->id);
         printf("Dificuldade: %s\n", obterNomeNivel(pergunta->nivel));
@@ -387,8 +388,47 @@ static void gerenciarPerguntas(Cadastro *cadastro){
     }
 }
 
+static void mostrarRanking(const char *caminho){
+    ResultadoRanking resultados[RANKING_LIMITE];
+    int quantidade = consultarRanking(caminho, resultados);
+    if (quantidade < 0){
+        puts("Não foi possível consultar o ranking.");
+        return;
+    }
+    puts("\nRanking - 10 melhores resultados");
+    if (quantidade == 0){
+        puts("Nenhum resultado registrado.");
+    }
+    for (int i = 0; i < quantidade; i++){
+        const ResultadoRanking *resultado = &resultados[i];
+        printf("%d. %s | R$ %d | %d acertos | %s\n", i + 1,
+               resultado->nome, resultado->premio, resultado->acertos,
+               descreverResultadoRanking(resultado->estado));
+    }
+}
+
+static void salvarResultadoNoTerminal(const char *caminho, const Partida *partida){
+    char nome[RANKING_TAM_NOME];
+    for (;;){
+        puts("Nome para o ranking (Enter para pular):");
+        int leitura = lerLinha(nome, sizeof(nome));
+        if (leitura == EOF || (leitura == 1 && nome[0] == '\0')){
+            return;
+        }
+        if (leitura == 1 && nomeRankingValido(nome)){
+            break;
+        }
+        puts("Informe um nome válido de até 40 bytes, sem tabulações.");
+    }
+    if (registrarResultadoRanking(caminho, nome, partida)){
+        puts("Resultado registrado no ranking.");
+    } else {
+        puts("Não foi possível gravar o resultado no ranking.");
+    }
+}
+
 /** @brief Executa uma partida completa e retorna ao menu ao encerrar. */
-static void jogarNoTerminal(Cadastro *cadastro){
+static void jogarNoTerminal(Cadastro *cadastro, const char *ranking){
     Partida partida;
     ResultadoInicio inicio = iniciarPartida(&partida, cadastro);
     if (inicio != INICIO_SUCESSO){
@@ -401,6 +441,12 @@ static void jogarNoTerminal(Cadastro *cadastro){
     }
 
     puts("Prêmios provisórios: marcos nas perguntas 5 e 10.");
+    puts("\nVocê tem estas ajudas disponíveis. Cada uma pode ser usada uma vez por partida:");
+    puts("1 - Supernova (50/50): elimina duas alternativas incorretas.");
+    puts("2 - Missão Espacial: revela uma pista sobre a pergunta.");
+    puts("3 - Telescópio: mostra uma informação de contexto diferente da pista.");
+    puts("4 - Especialista: sugere uma alternativa e pode errar.");
+    puts("Quando a pergunta não tiver pista ou contexto, o uso da ajuda é preservado.");
     while (partida.estado == PARTIDA_EM_ANDAMENTO){
         const Pergunta *pergunta = obterPerguntaAtual(&partida);
         printf("\nPergunta %d de %d - %s\n", partida.indiceAtual + 1,
@@ -432,7 +478,7 @@ static void jogarNoTerminal(Cadastro *cadastro){
             printf("%d - %s [%s]\n", i + 1, nomes[i],
                    partida.ajudas.usadas[i] ? "usada" : "disponível");
         }
-        puts("Responda A-D ou S para desistir:");
+        puts("Responda A-D, use 1-4 para pedir ajuda ou S para desistir:");
         fflush(stdout);
         int opcao = lerOpcao();
         if (opcao == 'S' || opcao == EOF){
@@ -480,13 +526,20 @@ static void jogarNoTerminal(Cadastro *cadastro){
         puts("Partida encerrada por desistência.");
     }
     printf("Acertos: %d | Prêmio final: R$ %d\n", partida.acertos, partida.premioAtual);
+    if (!feof(stdin) && !ferror(stdin)){
+        salvarResultadoNoTerminal(ranking, &partida);
+    }
 }
 
 void executarMenu(Cadastro *cadastro){
+    const char *ranking = getenv("COSMOS_RANKING");
+    if (ranking == NULL || *ranking == '\0'){
+        ranking = RANKING_ARQUIVO;
+    }
     for (;;){
         printf("\nProjeto Cosmos - terminal\n");
         printf("Perguntas carregadas: %zu\n1 - Iniciar partida\n"
-               "2 - Gerenciar perguntas\n0 - Salvar e sair\n",
+               "2 - Gerenciar perguntas\n3 - Ver ranking\n0 - Salvar e sair\n",
                cadastro->quantidade);
         fflush(stdout);
         int opcao = lerOpcao();
@@ -494,9 +547,11 @@ void executarMenu(Cadastro *cadastro){
             return;
         }
         if (opcao == '1'){
-            jogarNoTerminal(cadastro);
+            jogarNoTerminal(cadastro, ranking);
         } else if (opcao == '2'){
             gerenciarPerguntas(cadastro);
+        } else if (opcao == '3'){
+            mostrarRanking(ranking);
         } else {
             puts("Opção inválida.");
         }
