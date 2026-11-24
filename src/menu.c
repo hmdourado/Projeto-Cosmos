@@ -12,6 +12,9 @@
 #include "../include/video.h"
 #include "../include/menu.h"
 
+
+
+Font fonteCosmos;
 /**
  * @brief Executa Menu 
  * 
@@ -22,8 +25,9 @@ void executarMenu(Cadastro *cadastro)
 {
     (void)cadastro; // Evita warning enquanto não utilizamos o cadastro.
 
-    InitWindow(1280, 720, "Meu aplicativo");
-
+    InitWindow(1280, 720, "Cosmos");
+    //fontes
+    fonteCosmos = LoadFont("assets/fonts/Nasalization.ttf");
     SetTargetFPS(60);
 
     VideoBackground fundo;
@@ -51,32 +55,43 @@ void executarMenu(Cadastro *cadastro)
             VideoDraw(&fundo);
 
             // Depois desenhamos a interface
-            DrawText(
-                "MEU APLICATIVO",
-                50, 50,
-                35,
-                WHITE
+            DrawTextEx(
+                fonteCosmos,
+                "COSMOS",
+                 (Vector2){ 450, 50 },
+                 100,       // Tamanho da fonte
+                 2,
+                 WHITE
             );
 
             DrawText(
-                "Bem-vindo!",
-                50, 110,
-                25,
+                "v.1.0.0 (beta)",
+                50, 15,
+                10,
                 WHITE
             );
-
+/*
             DrawRectangleRounded(
                 (Rectangle){50, 180, 200, 55},
                 0.2f,
                 8,
                 DARKBLUE
             );
+*/
+            
 
             DrawText(
-                "ENTRAR",
-                105, 197,
-                20,
+                "COMEÇAR PARTIDA",
+                925, 650,
+                30,
                 WHITE
+            );
+
+             DrawText(
+                "SALVAR E SAIR",
+                125, 650,
+                25,
+                RED
             );
 
         EndDrawing();
