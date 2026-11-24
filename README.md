@@ -1,80 +1,133 @@
-# Projeto-Cosmos
+# Jogo do Milhão Cósmico
 
-Nesta atividade os alunos deverão desenvolver um sistema que permita a criação e
-manipulação de baralhos no estilo “Jogo do Milhão”. O sistema deve ser desenvolvido utilizando
-a linguagem C e os conceitos visto em sala de aula. A atividade deverá ser desenvolvida em
-trios impreterivelmente.
-O sistema desenvolvido deverá obrigatoriamente contemplar, mas não estar restrito, aos
-seguintes aspectos:
+Jogo de perguntas e respostas com temática de Astronomia, desenvolvido em linguagem C para a disciplina **Fundamentos de Programação 2 (FDCO2B)**, do curso de Engenharia de Computação da **Universidade Tecnológica Federal do Paraná (UTFPR) — Campus Apucarana**.
 
-◦ Cadastro:
-▪ Escolha uma temática para o seu jogo. Exemplos: Futebol, Games, Séries, Animes,
-Cultura Pop/Geek, História da Computação, Linguagens de Programação, Memes,
-Marvel, Puzzles(lógica e raciocínio).
-▪ Para gerenciar uma coleção de perguntas para o jogo, defina uma estrutura
-Pergunta contendo, no mínimo: enunciado (texto), 4 alternativas (texto), letra da
-alternativa correta(char), nível de dificuldade. O sistema deverá permitir cadastrar
-(inserir/ listar/ pesquisar/ alterar/ excluir) as perguntas disponíveis. Essa relação
-deve aumentar e diminuir dinamicamente.
-▪ O jogo será dividido em 15 perguntas organizadas em 5 níveis de dificuldade: muito
-fácil, fácil, médio, difícil e muito difícil. As duas primeiras questões serão muito
-fáceis, seguidas por duas fáceis (níveis 3 e 4). As perguntas de nível médio vão do 5
-ao 8, sendo o nível 5 o primeiro marco de segurança. Do 9 ao 12, as perguntas
-serão difíceis, com o nível 10 como segundo marco. Por fim, as três últimas
-perguntas (13 a 15) terão dificuldade muito difícil, incluindo a questão final de um
-milhão.
-▪ Deverá permitir pesquisar e visualizar as perguntas por nível de dificuldade,
-navegando entre elas. Para isso utilize cores, sons e sua criatividade.
-▪ Deverá apresentar um menu inicial com as opções disponíveis. Caso necessário,
-submenus. A interface deverá ser fácil e intuitiva, seja criativo, utilize cores e
-beeps :) . Trate erros do usuário com mensagens e alertas.
+> **Status:** em desenvolvimento. A camada de interface gráfica com Raylib está em integração com os módulos de dados e regras da partida.
 
+## Sobre o projeto
 
-◦ Arquivos
-▪ Na primeira execução, a lista com os dados para as Figurinhas iniciais existentes
-será construída lendo os dados de um arquivo de texto (.CSV - valores separados
-por vírgula) que será criado pela equipe e carregado em um vetor de tamanho
-dinâmico. Ao sair do programa, todos os dados, com eventuais alterações, devem
-ser salvos em um arquivo binário no HD;
-▪ Nas demais execuções, ao entrar e sair do programa, todos os dados devem ser
-lidos e salvos nesse arquivo binário no HD;
-▪ A lista com os dados para as perguntas iniciais será construída lendo os dados
-de um arquivo .csv (valores separados por vírgula) construído pela equipe. Esse
-arquivo deve ter no mínimo a seguinte quantidade de perguntas: 20 muito fácil,
-20 fácil, 15 médio, 15 difícil e 10 muito difícil.
-▪ O sistema deverá permitir exportar os dados atuais em um arquivo de texto no
-formato .CSV (separado por vírgula).
-Observações sobre o código:
-◦ Os códigos referentes a cada estrutura devem estar em um arquivo fonte (.c) separado
-com seu respectivo arquivo de cabeçalho(.h). Utilize outros arquivos para organizar seu
-código conforme necessidade;
-◦ O programa deverá acompanhar um arquivo makefile que permita as operações básicas
-de make (compilação), clean (limpeza) e run (execução);
-◦ Como parte do critério de avaliação, a qualidade do código-fonte do sistema será
-avaliada. Organize seu programa em arquivos .c e .h, funções. Evite o uso de variáveis
-globais. O código deverá estar comentado, edentado e com bons nomes de variáveis e
-funções. Siga o padrão de documentação apresentado na disciplina (Doxygen).
+O sistema implementa a estrutura de um jogo no estilo *Jogo do Milhão*, permitindo gerenciar um banco de perguntas, iniciar partidas e persistir os dados entre execuções. O projeto é organizado em módulos C, com separação entre cadastro, persistência, lógica do jogo e interface.
 
-• Parte Criativa (40% da nota)
-◦ Partida: Adicione uma funcionalidade que permita jogar uma partida de Jogo do Milhão
-contra o computador utilize a regra oficial do SBT como base.
-◦ Adicione novas regras e funcionalidades ao jogo. Exemplo: diferentes esquemas de
-ajuda (podem ser baseadas no tema do jogo), interface gráfica(raylib), ranking músicas e
-sons e etc. Use sua criatividade!
-◦ Obs: Para o desenvolvimento da parte criativa, você pode adicionar mais campos ao
-arquivo .csv com os dados das questões.
-• Entrega via Github
-◦ Cada equipe deverá criar um repositório no Github, compartilhado entre os membros e
-com o professor. O link do repositório deverá ser enviado ao professor até dia a data
-estabelecida na tabela abaixo juntamente com os dados iniciais.
-Avaliação: Implementação + Apresentação
-Além do envio do código fonte, os(as) alunos(as) deverão realizar uma apresentação projeto
-que terá duração de 10 e 15 minutos. Durante a apresentação, deverão descrever a abordagem
-utilizada e apresentar uma visão geral da implementação. Em seguida, deverão mostrar o
-sistema em funcionamento. Após a apresentação, serão arguidos individualmente pelo professor
-e pelos demais alunos da turma em relação ao desenvolvimento do projeto. A apresentação
-será avaliada de acordo com os seguintes critérios:
-● Respeito ao tempo estipulado para a apresentação;
-● Criatividade na apresentação e no desenvolvimento do sistema;
-● Coerência do projeto desenvolvido e o que foi apresentado;
-● Domínio do projeto verificado por meio da explicação do código fonte;
+### Regras principais
+
+- Cada partida contém **15 perguntas**, distribuídas em cinco níveis: 2 muito fáceis, 2 fáceis, 4 médias, 4 difíceis e 3 muito difíceis.
+- As perguntas 5 e 10 representam os marcos de segurança.
+- O banco inicial deve conter pelo menos **80 perguntas**: 20 muito fáceis, 20 fáceis, 15 médias, 15 difíceis e 10 muito difíceis.
+
+### Funcionalidades previstas no escopo
+
+- Cadastro de perguntas: inserir, listar, pesquisar, alterar e excluir.
+- Armazenamento dinâmico da coleção de perguntas.
+- Consulta e navegação de perguntas por nível de dificuldade.
+- Importação inicial de perguntas por CSV, persistência em arquivo binário e exportação dos dados atuais para CSV.
+- Partida contra o computador, com progressão, respostas, pontuação, desistência e marcos de segurança.
+- Interface gráfica com Raylib e recursos criativos temáticos.
+
+## Tecnologias
+
+- **C** (padrão C11)
+- **Raylib** para a interface gráfica
+- **GCC MinGW-w64 64 bits** no Windows
+- **GNU Make** para automatizar a compilação
+- **Git** para controle de versão
+
+## Estrutura do projeto
+
+```text
+Projeto-Cosmos/
+├── include/          # Cabeçalhos (.h)
+├── src/              # Implementação dos módulos (.c)
+│   └── telas/        # Implementação das telas da interface
+├── lib/              # Bibliotecas utilizadas pelo projeto
+├── build/            # Executáveis e artefatos de compilação
+├── main.c            # Ponto de entrada
+├── Makefile          # Instruções de compilação e execução
+└── README.md
+```
+
+A estrutura pode ser ampliada conforme a implementação dos módulos e das funcionalidades criativas.
+
+## Como compilar e executar
+
+### Windows
+
+**Pré-requisitos**
+
+1. Instalar o [w64devkit x64 2.0.0](https://github.com/skeeto/w64devkit/releases/download/v2.0.0/w64devkit-x64-2.0.0.exe), conforme o guia de instalação da disciplina.
+2. Adicionar o diretório `bin` do w64devkit ao `PATH`. Exemplo, caso instalado em `C:\w64devkit`:
+
+   ```text
+   C:\w64devkit\bin
+   ```
+
+3. Disponibilizar a biblioteca Raylib para Windows no caminho configurado pelo `Makefile` (na configuração atual, `lib/libraylib_win64.a`).
+
+**Verificar as ferramentas** em um novo PowerShell:
+
+```powershell
+where.exe gcc
+gcc --version
+gcc -dumpmachine
+where.exe mingw32-make
+```
+
+O compilador deve ser MinGW-w64 de 64 bits (`x86_64-w64-mingw32`).
+
+**Compilar e executar**, a partir da raiz do repositório:
+
+```powershell
+mingw32-make clean
+mingw32-make CC=gcc
+.\build\cosmos.exe
+```
+
+O comando `mingw32-make run CC=gcc` também pode ser utilizado quando o alvo `run` do `Makefile` estiver configurado para executar o binário com a sintaxe do Windows.
+
+### Linux (Debian, Ubuntu e derivados)
+
+**Pré-requisitos**
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential make git \
+  libasound2-dev libx11-dev libxrandr-dev libxi-dev \
+  libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev \
+  libxinerama-dev libwayland-dev libxkbcommon-dev
+```
+
+Também é necessário ter uma versão da Raylib compilada/instalada para Linux e configurar o `Makefile` para utilizar essa biblioteca e as dependências de ligação do Linux.
+
+**Compilar e executar**, depois de configurar a biblioteca e o alvo Linux no `Makefile`:
+
+```bash
+# Compilar
+make
+
+# Executar
+make run
+
+# Limpar arquivos gerados
+make clean
+```
+
+> **Nota sobre suporte multiplataforma:** a configuração de ligação atualmente registrada no `Makefile` utiliza a biblioteca `lib/libraylib_win64.a` e bibliotecas de sistema do Windows. Esse arquivo não pode ser usado em Linux. Portanto, a compilação Linux depende de uma configuração específica para Raylib/Linux no `Makefile`; ainda não está validada nesta versão do projeto.
+
+## Dados e persistência
+
+O banco inicial de perguntas é fornecido em CSV. O sistema também prevê salvar os dados atualizados em arquivo binário ao encerrar e recuperá-los nas execuções seguintes, além de permitir exportar o cadastro atual para CSV.
+
+## Desenvolvimento e qualidade
+
+O código é dividido em arquivos `.c` e `.h`, com responsabilidades separadas por módulo. A implementação deve manter nomes descritivos, indentação consistente, tratamento de erros, gerenciamento correto de memória e documentação das funções no padrão **Doxygen**, conforme as orientações da disciplina.
+
+## Contexto acadêmico
+
+- **Instituição:** Universidade Tecnológica Federal do Paraná (UTFPR), Campus Apucarana
+- **Curso:** Engenharia de Computação
+- **Disciplina:** Fundamentos de Programação 2 — FDCO2B (2026/2)
+- **Docente:** Profa. Muriel de Souza Godoi
+- **Tema:** Astronomia
+
+---
+
+Projeto acadêmico desenvolvido em equipe para aplicação prática dos conceitos de programação em C.
