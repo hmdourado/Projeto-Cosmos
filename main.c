@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "include/raylib.h"
+#include "include/video.h"
 
 int main(int argc, char *argv[]){
     // Permite informar caminhos alternativos para testes e execução.
@@ -14,7 +16,7 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Uso: %s [arquivo.bin [arquivo.csv]]\n", argv[0]);
         return EXIT_FAILURE;
     }
-    const char *binario = argc > 1 ? argv[1] : "dados/perguntas.bin";
+    const char *binario = argc > 1 ? argv[1] : "dados/perguntas.dat";
     const char *csv = argc > 2 ? argv[2] : "dados/perguntas.csv";
 
     // Inicializa o cadastro vazio antes de tentar recuperar os dados.
