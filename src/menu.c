@@ -14,7 +14,6 @@
 
 
 
-Font fonteCosmos;
 /**
  * @brief Executa Menu 
  * 
@@ -27,7 +26,26 @@ void executarMenu(Cadastro *cadastro)
 
     InitWindow(1280, 720, "Cosmos");
     //fontes
-    fonteCosmos = LoadFont("assets/fonts/Nasalization.ttf");
+
+    //fonteCosmos = LoadFontEx("assets/fonts/Nasalization Rg.otf");
+
+    Font fonteCosmos = LoadFontEx(
+        "assets/fonts/Nasalization Rg.otf",
+        128,    // Resolução de carregamento
+        NULL,
+        0
+    );
+
+    SetTextureFilter(fonteCosmos.texture, TEXTURE_FILTER_BILINEAR);
+    
+    Font fonteMenuSecundaria = LoadFontEx(
+        "assets/fonts/",
+        128,
+        NULL,
+        0
+    );
+    SetTextureFilter(fonteMenuSecundaria.texture, TEXTURE_FILTER_BILINEAR);
+
     SetTargetFPS(60);
 
     VideoBackground fundo;
@@ -98,6 +116,6 @@ void executarMenu(Cadastro *cadastro)
     }
 
     VideoClose(&fundo);
-
+    UnloadFont(fonteCosmos);
     CloseWindow();
 }
