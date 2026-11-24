@@ -1,9 +1,19 @@
+/**
+ * @file video.c
+ * @author Arthur Morais Palitot Fernandes (arthurpalitot@gmail.com | arthurmoraisfernandes@alunos.utfpr.edu.br)
+ * @brief 
+ * @version 0.1
+ * @date 23-11-2026
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+ */
 
 #include "../include/video.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
+//definicoes dos sistemas 
 #ifdef _WIN32
     #include <direct.h>
     #define obterDiretorioAtual _getcwd
@@ -26,8 +36,14 @@
 #define VIDEO_ALTURA 720
 #define VIDEO_FPS 24
 
-// Lê exatamente um frame do processo FFmpeg.
-static bool LerFrame(VideoBackground *video)
+/**
+ * @brief Le exatamente um frame do processo ffmpeg
+ * 
+ * @param video ponteiro do videobackground
+ * @return true se o frame for lido 
+ * @return false caso erro
+ */
+ static bool LerFrame(VideoBackground *video)
 {
     size_t tamanhoFrame =
         (size_t)video->largura * video->altura * 4;
@@ -54,7 +70,14 @@ static bool LerFrame(VideoBackground *video)
     return true;
 }
 
-// Inicializa o vídeo.
+/**
+ * @brief Inicializa o video
+ * 
+ * @param video 
+ * @param arquivo 
+ * @return true  se o video for inicializado
+ * @return false caso erro 
+ */
 bool VideoInit(VideoBackground *video, const char *arquivo)
 {
     
@@ -80,7 +103,7 @@ bool VideoInit(VideoBackground *video, const char *arquivo)
         video->altura,
         BLACK
     );
-
+     
     video->textura = LoadTextureFromImage(imagem);
     UnloadImage(imagem);
 
@@ -91,6 +114,7 @@ bool VideoInit(VideoBackground *video, const char *arquivo)
         return false;
     }
 
+    //carrega o diretorio para o comando, vital para o #ifdef _WIN32
     char comando[1024];
     char diretorio[512];
     if (obterDiretorioAtual(diretorio, sizeof(diretorio)) == NULL){
@@ -100,6 +124,7 @@ bool VideoInit(VideoBackground *video, const char *arquivo)
     }
 
 #ifdef _WIN32
+    //integracao do FFMPEG
     snprintf(comando, sizeof(comando),
         "ffmpeg\\ffmpeg.exe -nostdin -hide_banner -loglevel error "
         "-i %s -an "
@@ -156,7 +181,11 @@ bool VideoInit(VideoBackground *video, const char *arquivo)
     return true;
 }
 
-// Atualiza os frames.
+/**
+ * @brief  Atualiza o video
+ * 
+ * @param video 
+ */
 void VideoUpdate(VideoBackground *video)
 {
     if (video == NULL || video->finalizado)
@@ -180,7 +209,11 @@ void VideoUpdate(VideoBackground *video)
     }
 }
 
-// Desenha o vídeo na tela.
+/**
+ * @brief Desenha o vídeo na tela.
+ * 
+ * @param video 
+ */
 void VideoDraw(VideoBackground *video)
 {
     if (video == NULL || video->textura.id == 0)
@@ -204,7 +237,11 @@ void VideoDraw(VideoBackground *video)
     );
 }
 
-// Libera os recursos.
+/**
+ * @brief Libera os recursos.
+ * 
+ * @param video 
+ */
 void VideoClose(VideoBackground *video)
 {
     if (video == NULL)
