@@ -34,22 +34,22 @@ void executarMenu(Cadastro *cadastro)
 
     Font fonteCosmos = LoadFontEx(
         "assets/fonts/spacerangerlaser.ttf",
-        128,    // Resolução de carregamento
+        600,    // Resolução de carregamento
         NULL,
         0
     );
 
     SetTextureFilter(fonteCosmos.texture, TEXTURE_FILTER_BILINEAR);
-    /*
+    
      Font fonteMenuSecundaria = LoadFontEx(
-        "assets/fonts/",
+        "assets/fonts/terminator real nfi.ttf",
         128,
         NULL,
         0
     );
-    */
+    
    
-    //SetTextureFilter(fonteMenuSecundaria.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(fonteMenuSecundaria.texture, TEXTURE_FILTER_BILINEAR);
 
     SetTargetFPS(60);
 
@@ -103,18 +103,23 @@ void executarMenu(Cadastro *cadastro)
 */
             
 
-            DrawText(
-                "COMEÇAR PARTIDA",
-                925, 650,
-                30,
-                WHITE
+            DrawTextEx(
+                fonteMenuSecundaria,
+
+                "COMECAR PARTIDA >>",
+                (Vector2){800,650},
+                 20,       // Tamanho da fonte
+                 2,
+                 WHITE
             );
 
-             DrawText(
+             DrawTextEx(
+                fonteMenuSecundaria,
                 "SALVAR E SAIR",
-                125, 650,
-                25,
-                RED
+                 (Vector2){75,650},
+                 15,       // Tamanho da fonte
+                 2,
+                 RED
             );
 
         EndDrawing();
