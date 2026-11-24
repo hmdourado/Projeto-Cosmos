@@ -41,12 +41,10 @@ void prepararAjudasPergunta(EstadoAjudas *ajudas);
 int obterChanceEspecialista(NivelDificuldade nivel);
 
 /**
- * @brief Retorna uma orientação textual para a ajuda solicitada.
- * @param pergunta Pergunta atual, utilizada para determinar a dificuldade.
- * @param tipo Tipo de ajuda textual solicitado.
- * @return Texto estático de orientação ou NULL quando o tipo não possui texto.
- * @note As orientações atuais são genéricas por dificuldade. A estrutura Pergunta
- *       ainda não armazena pistas específicas por questão.
+ * @brief Retorna a pista específica vinculada à pergunta.
+ * @param pergunta Pergunta atual, identificada pelo ID e pelo enunciado.
+ * @param tipo Ajuda textual solicitada (Missão ou Telescópio).
+ * @return Texto estático correspondente ou NULL sem correspondência editorial.
  */
 const char *obterTextoAjuda(const Pergunta *pergunta, TipoAjuda tipo);
 

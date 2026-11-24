@@ -1,79 +1,65 @@
 /**
  * @file ajuda.c
- * @brief Implementação dos limites de uso e efeitos das ajudas.
+ * @brief Implementacao das regras e dos efeitos das ajudas da partida.
  */
 #include "../include/ajuda.h"
+#include "../include/pistas.h"
 
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdlib.h>
 
-// Centraliza as chances de acerto do especialista por nível de dificuldade.
+/* Chance percentual de o especialista indicar a resposta correta por nivel. */
 static const int CHANCES_ESPECIALISTA[MUITO_DIFICIL + 1] = {
     0, 90, 80, 70, 60, 50
 };
 
-// Fornece orientações de estratégia sem revelar diretamente a resposta.
-static const char *const PISTAS_MISSAO[MUITO_DIFICIL + 1] = {
-    NULL,
-    "Missao: identifique a palavra-chave do enunciado e associe-a ao conceito principal.",
-    "Missao: concentre-se na caracteristica central do objeto ou fenomeno citado.",
-    "Missao: relacione as informacoes do enunciado antes de escolher uma alternativa.",
-    "Missao: compare as propriedades descritas e procure a opcao compativel com todas elas.",
-    "Missao: divida o enunciado em condicoes e descarte hipoteses que contrariem alguma delas."
-};
-
-// Fornece uma segunda orientação para apoiar a comparação das alternativas.
-static const char *const PISTAS_TELESCOPIO[MUITO_DIFICIL + 1] = {
-    NULL,
-    "Telescopio: observe o termo central da pergunta e compare-o com as alternativas.",
-    "Telescopio: procure a caracteristica que melhor corresponde ao tema apresentado.",
-    "Telescopio: compare os conceitos envolvidos e elimine as alternativas incompatíveis.",
-    "Telescopio: observe as diferencas entre os fenomenos ou objetos mencionados.",
-    "Telescopio: avalie cada alternativa considerando todas as restricoes do enunciado."
-};
-
-// Retorna o índice da alternativa correta após validar sua letra.
+/**
+ * @brief Converte a letra da resposta correta em indice de alternativa.
+ * @param pergunta Pergunta que sera validada.
+ * @return Indice entre 0 e QUANT_ALTERNATIVAS - 1 ou -1 se invalida.
+ */
 static int obterIndiceRespostaCorreta(const Pergunta *pergunta) {
-
     if (pergunta == NULL ||
         pergunta->respostaCorreta < 'A' ||
-        pergunta->respostaCorreta > 'D') {
+        pergunta->respostaCorreta >= 'A' + QUANT_ALTERNATIVAS) {
         return -1;
     }
 
     return pergunta->respostaCorreta - 'A';
 }
 
-// Limpa os efeitos associados à pergunta atual sem restaurar ajudas já utilizadas.
+/**
+ * @brief Limpa os efeitos temporarios da pergunta atual.
+ * @param ajudas Estado das ajudas da partida.
+ *
+ * Os usos consumidos sao preservados; somente efeitos visuais e temporarios
+ * sao reiniciados para a proxima pergunta.
+ */
 void prepararAjudasPergunta(EstadoAjudas *ajudas) {
-
     if (ajudas == NULL) {
         return;
     }
 
-    // Remove os efeitos temporários de todas as ajudas.
     for (int i = 0; i < TOTAL_AJUDAS; i++) {
         ajudas->ativas[i] = 0;
     }
 
-    // Restaura as alternativas para a nova pergunta.
     for (int i = 0; i < QUANT_ALTERNATIVAS; i++) {
         ajudas->eliminadas[i] = 0;
     }
 
-    // Descarta a sugestão produzida pelo especialista na pergunta anterior.
     ajudas->sugestaoEspecialista = '\0';
 }
 
-// Inicializa o controle de uso e os efeitos de todas as ajudas da partida.
+/**
+ * @brief Inicializa o estado das ajudas para uma nova partida.
+ * @param ajudas Estado que sera inicializado.
+ */
 void inicializarAjudas(EstadoAjudas *ajudas) {
-
     if (ajudas == NULL) {
         return;
     }
 
-    // Todas as ajudas começam disponíveis para uma utilização na partida.
     for (int i = 0; i < TOTAL_AJUDAS; i++) {
         ajudas->usadas[i] = 0;
         ajudas->ativas[i] = 0;
@@ -82,9 +68,12 @@ void inicializarAjudas(EstadoAjudas *ajudas) {
     prepararAjudasPergunta(ajudas);
 }
 
-// Retorna a probabilidade de o especialista indicar a alternativa correta.
+/**
+ * @brief Retorna a chance percentual de acerto do especialista.
+ * @param nivel Nivel de dificuldade da pergunta.
+ * @return Chance entre 50 e 90 ou zero para nivel invalido.
+ */
 int obterChanceEspecialista(NivelDificuldade nivel) {
-
     if (nivel < MUITO_FACIL || nivel > MUITO_DIFICIL) {
         return 0;
     }
@@ -92,40 +81,45 @@ int obterChanceEspecialista(NivelDificuldade nivel) {
     return CHANCES_ESPECIALISTA[nivel];
 }
 
-// Retorna uma orientação estática conforme a ajuda e a dificuldade da pergunta.
+/**
+ * @brief Retorna a pista especifica associada a uma pergunta.
+ * @param pergunta Pergunta atual.
+ * @param tipo Ajuda textual solicitada (Missao ou Telescopio).
+ * @return Texto especifico ou NULL se nao houver correspondencia.
+ *
+ * A consulta valida tanto o ID quanto o enunciado. Assim, uma pergunta
+ * alterada ou um ID reutilizado nao recebe uma pista de outro registro.
+ */
 const char *obterTextoAjuda(const Pergunta *pergunta, TipoAjuda tipo) {
-
-    // Impede consultas com ponteiros ou tipos inválidos.
-    if (pergunta == NULL || tipo < AJUDA_SUPERNOVA || tipo >= TOTAL_AJUDAS) {
+    if (pergunta == NULL ||
+        (tipo != AJUDA_MISSAO && tipo != AJUDA_TELESCOPIO)) {
         return NULL;
     }
 
-    if (pergunta->nivel < MUITO_FACIL || pergunta->nivel > MUITO_DIFICIL) {
+    if (obterChanceEspecialista(pergunta->nivel) == 0) {
         return NULL;
     }
 
-    // Seleciona a orientação correspondente à ajuda textual solicitada.
-    switch (tipo) {
-
-        case AJUDA_MISSAO:
-            return PISTAS_MISSAO[pergunta->nivel];
-
-        case AJUDA_TELESCOPIO:
-            return PISTAS_TELESCOPIO[pergunta->nivel];
-
-        default:
-            return NULL;
-    }
+    return obterTextoPistaEspecifica(pergunta, tipo);
 }
 
-// Aplica o efeito solicitado e consome o uso somente após sua execução bem-sucedida.
+/**
+ * @brief Aplica o efeito de uma ajuda e registra seu uso em caso de sucesso.
+ * @param ajudas Estado de uso e efeitos das ajudas.
+ * @param pergunta Pergunta atualmente apresentada.
+ * @param tipo Tipo de ajuda solicitado.
+ * @return Resultado da operacao, conforme ResultadoAjuda.
+ *
+ * A ajuda Missao apresenta uma orientacao especifica. A ajuda Telescopio
+ * apresenta uma informacao complementar. Supernova elimina duas alternativas
+ * incorretas sem reposicao. Especialista sugere uma alternativa de acordo com
+ * a chance definida para o nivel da pergunta.
+ */
 ResultadoAjuda aplicarAjuda(
     EstadoAjudas *ajudas,
     const Pergunta *pergunta,
     TipoAjuda tipo
 ) {
-
-    // Valida os parâmetros antes de acessar os vetores de controle.
     if (ajudas == NULL || pergunta == NULL ||
         tipo < AJUDA_SUPERNOVA || tipo >= TOTAL_AJUDAS ||
         obterIndiceRespostaCorreta(pergunta) < 0 ||
@@ -133,69 +127,69 @@ ResultadoAjuda aplicarAjuda(
         return AJUDA_INVALIDA;
     }
 
-    // Impede que uma ajuda seja utilizada mais de uma vez na mesma partida.
     if (ajudas->usadas[tipo]) {
         return AJUDA_JA_USADA;
     }
 
-    // As ajudas textuais não consomem uso quando não há orientação disponível.
+    /* Ajudas textuais so sao consumidas quando existe conteudo especifico. */
     if (tipo == AJUDA_MISSAO || tipo == AJUDA_TELESCOPIO) {
-
         if (obterTextoAjuda(pergunta, tipo) == NULL) {
             return AJUDA_SEM_CONTEUDO;
         }
-
     } else {
-
         int incorretas[QUANT_ALTERNATIVAS];
-        int quantidade = 0;
-        int correta = obterIndiceRespostaCorreta(pergunta);
+        int quantidadeIncorretas = 0;
+        const int indiceCorreto = obterIndiceRespostaCorreta(pergunta);
 
-        // Identifica somente as alternativas incorretas ainda disponíveis.
+        /* Monta a lista de alternativas incorretas ainda disponiveis. */
         for (int i = 0; i < QUANT_ALTERNATIVAS; i++) {
-            if (i != correta && !ajudas->eliminadas[i]) {
-                incorretas[quantidade++] = i;
+            if (i != indiceCorreto && !ajudas->eliminadas[i]) {
+                incorretas[quantidadeIncorretas++] = i;
             }
         }
 
         if (tipo == AJUDA_SUPERNOVA) {
-
-            // A supernova precisa encontrar duas alternativas incorretas disponíveis.
-            if (quantidade < 2) {
+            if (quantidadeIncorretas < 2) {
                 return AJUDA_NAO_PERMITIDA;
             }
 
-            // Sorteia duas alternativas sem reposição e preserva a resposta correta.
+            /* Sorteia duas alternativas distintas, sem eliminar a correta. */
             for (int i = 0; i < 2; i++) {
-                int sorteada = rand() % quantidade;
-                ajudas->eliminadas[incorretas[sorteada]] = 1;
-                incorretas[sorteada] = incorretas[quantidade - 1];
-                quantidade--;
+                const int sorteio = rand() % quantidadeIncorretas;
+                const int indiceEliminado = incorretas[sorteio];
+
+                ajudas->eliminadas[indiceEliminado] = 1;
+
+                /* Remove o item sorteado da lista sem deslocar o vetor. */
+                incorretas[sorteio] = incorretas[quantidadeIncorretas - 1];
+                quantidadeIncorretas--;
             }
 
-            // Invalida uma sugestão anterior caso a alternativa sugerida tenha sido eliminada.
-            int indiceSugestao = ajudas->sugestaoEspecialista - 'A';
-            if (indiceSugestao >= 0 && indiceSugestao < QUANT_ALTERNATIVAS &&
-                ajudas->eliminadas[indiceSugestao]) {
-                ajudas->sugestaoEspecialista = '\0';
+            /* Uma sugestao anterior deixa de valer se a opcao foi eliminada. */
+            if (ajudas->sugestaoEspecialista >= 'A' &&
+                ajudas->sugestaoEspecialista < 'A' + QUANT_ALTERNATIVAS) {
+                const int indiceSugestao = ajudas->sugestaoEspecialista - 'A';
+                if (ajudas->eliminadas[indiceSugestao]) {
+                    ajudas->sugestaoEspecialista = '\0';
+                }
             }
-
         } else if (tipo == AJUDA_ESPECIALISTA) {
+            const int chance = obterChanceEspecialista(pergunta->nivel);
+            const bool acertou = (rand() % 100) < chance;
+            int indiceSugerido = indiceCorreto;
 
-            // O especialista pode errar conforme a dificuldade, mas não sugere opção eliminada.
-            int chance = obterChanceEspecialista(pergunta->nivel);
-            bool acerta = rand() % 100 < chance;
-            int sugestao = correta;
-
-            if (!acerta && quantidade > 0) {
-                sugestao = incorretas[rand() % quantidade];
+            /* Se errar, escolhe uma incorreta que ainda nao foi eliminada. */
+            if (!acertou && quantidadeIncorretas > 0) {
+                indiceSugerido = incorretas[rand() % quantidadeIncorretas];
             }
 
-            ajudas->sugestaoEspecialista = (char)('A' + sugestao);
+            ajudas->sugestaoEspecialista = (char)('A' + indiceSugerido);
+        } else {
+            return AJUDA_INVALIDA;
         }
     }
 
-    // Registra o uso e ativa o efeito somente depois da aplicação bem-sucedida.
+    /* Consome e ativa a ajuda somente depois de concluir o efeito. */
     ajudas->usadas[tipo] = 1;
     ajudas->ativas[tipo] = 1;
 

@@ -1,4 +1,3 @@
-
 /**
  * @file jogo.c
  * @brief Implementação da interface gráfica cinematográfica da partida utilizando Raylib.
@@ -63,10 +62,11 @@ static LayoutTelaJogo calcularLayoutTelaJogo(void) {
 
     if (layout.layoutCinematografico) {
         float larguraEscada = limitarValor(largura * 0.125f, 150.0f, 180.0f);
-        float larguraPersonagem = limitarValor(largura * 0.25f, 300.0f, 340.0f);
+        float larguraPersonagem = limitarValor(largura * 0.285f, 330.0f, 390.0f);
         float espacamento = 18.0f;
         float xPrincipal = margem + larguraEscada + espacamento;
-        float xPersonagem = largura - margem - larguraPersonagem - 12.0f;
+        
+        float xPersonagem = largura - margem - larguraPersonagem + 40.0f;
         float larguraPrincipal = xPersonagem - espacamento - xPrincipal;
 
         layout.escadaPremios = (Rectangle){
@@ -97,21 +97,13 @@ static LayoutTelaJogo calcularLayoutTelaJogo(void) {
             larguraPrincipal, 43.0f
         };
 
-        // Posiciona a fala abaixo da regiao do rosto para nao encobrir a apresentadora.
         layout.balaoPersonagem = (Rectangle){
-            xPersonagem + 8.0f, 205.0f, larguraPersonagem - 16.0f, 58.0f
+            xPersonagem + 8.0f, 96.0f, larguraPersonagem - 16.0f, 66.0f
         };
-
-        // Mantem a personagem abaixo do cabecalho e acima da identificacao inferior.
-        float posicaoPersonagemY = 90.0f;
-        float margemInferiorPersonagem = 100.0f;
 
         layout.areaPersonagem = (Rectangle){
-            xPersonagem,
-            posicaoPersonagemY,
-            larguraPersonagem,
-            altura - posicaoPersonagemY - margemInferiorPersonagem
-        };
+            xPersonagem, 410.0f, larguraPersonagem, altura - 244.0f
+        };  
 
         layout.identificacaoPersonagem = (Rectangle){
             xPersonagem + 8.0f, altura - 82.0f, larguraPersonagem - 16.0f, 40.0f
@@ -273,24 +265,37 @@ static void desenharTextoMultilinha(
             snprintf(candidata, sizeof(candidata), "%s %s", linha, palavra);
         }
 
-        Vector2 medida = MeasureTextEx(fonte, candidata, tamanho, 1.0f);
-        if (medida.x > area.width && linha[0] != '\0') {
-            if (posicaoY + tamanho > area.y + area.height) return;
-            DrawTextEx(fonte, linha, (Vector2){area.x, posicaoY}, tamanho, 1.0f, cor);
-            posicaoY += tamanho + 6.0f;
-            snprintf(linha, sizeof(linha), "%s", palavra);
-        } else {
-            // Limita a cópia à capacidade disponível no vetor de destino.
-            size_t tamanhoCandidata = strlen(candidata);
+        
+    Vector2 medida = MeasureTextEx(fonte, candidata, tamanho, 1.0f);
+    size_t tamanhoCandidata = strlen(candidata);
 
-            if (tamanhoCandidata >= sizeof(linha)) {
-                tamanhoCandidata = sizeof(linha) - 1;
-            }
+    int precisaQuebrar =
+        medida.x > area.width ||
+        tamanhoCandidata >= sizeof(linha);
 
-            // Copia o conteúdo e garante o terminador da string.
-            memcpy(linha, candidata, tamanhoCandidata);
-            linha[tamanhoCandidata] = '\0';
+    if (precisaQuebrar && linha[0] != '\0') {
+        if (posicaoY + tamanho > area.y + area.height) {
+            return;
         }
+
+        DrawTextEx(
+            fonte,
+            linha,
+            (Vector2){area.x, posicaoY},
+            tamanho,
+            1.0f,
+            cor
+        );
+
+        posicaoY += tamanho + 6.0f;
+
+        memcpy(linha, palavra, strlen(palavra) + 1);
+    } else if (tamanhoCandidata < sizeof(linha)) {
+        memcpy(linha, candidata, tamanhoCandidata + 1);
+    } else {
+        memcpy(linha, palavra, strlen(palavra) + 1);
+    }
+
     }
 
     // Desenha a última linha quando ainda existe espaço na área.
@@ -511,7 +516,13 @@ static void desenharMensagem(const DadosTelaJogo *dados, Rectangle area, Feedbac
     if (mensagem == NULL || mensagem[0] == '\0') {
         mensagem = "Escolha uma alternativa para continuar.";
     }
-    desenharTextoCentralizado(mensagem, area, 14.0f, cor);
+    Rectangle areaTexto = {
+        area.x + 10.0f,
+        area.y + 3.0f,
+        area.width - 20.0f,
+        area.height - 6.0f
+    };
+    desenharTextoMultilinha(mensagem, areaTexto, 11.5f, cor);
 }
 
 // Desenha os botões de ajuda e a opção de desistência com estados de hover.
@@ -539,7 +550,8 @@ static void desenharControles(
 
         desenharPainelHolografico(botao, 0.20f, fundo,
             disponivel ? (hover > 0.1f ? COR_DESTAQUE : COR_BORDA) : COR_FUNDO_CLARO);
-        desenharTextoCentralizado(nomesAjudas[i], botao,
+        const char *rotulo = disponivel ? nomesAjudas[i] : "USADA";
+        desenharTextoCentralizado(rotulo, botao,
             GetScreenWidth() < 1180 ? 10.0f : 11.0f,
             disponivel ? COR_TEXTO : COR_DESABILITADO);
     }
@@ -563,6 +575,9 @@ static void desenharAreaPersonagem(
     const LayoutTelaJogo *layout
 ) {
     Rectangle area = layout->areaPersonagem;
+
+    area.x += 92.0f;  // Desloca somente a imagem para a direita.
+    area.y += 10.0f;  // Desloca somente a imagem para baixo.
     Vector2 centro = {area.x + area.width / 2.0f, area.y + area.height * 0.57f};
 
     // Cria uma iluminação suave atrás da apresentadora.

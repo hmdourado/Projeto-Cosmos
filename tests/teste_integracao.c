@@ -144,10 +144,10 @@ int main(void){
     // Isola todos os arquivos gerados, sem modificar o banco real do projeto.
     char diretorio[260];
     assert(criarDiretorioTemporario(diretorio, sizeof(diretorio)));
-    char binario[256];
-    char ausente[256];
-    char caminhoInvalido[256];
-    char csvExportado[300];
+    char binario[512];
+    char ausente[512];
+    char caminhoInvalido[512];
+    char csvExportado[512];
     snprintf(binario, sizeof(binario), "%s/perguntas.bin", diretorio);
     snprintf(ausente, sizeof(ausente), "%s/ausente.csv", diretorio);
     snprintf(caminhoInvalido, sizeof(caminhoInvalido),

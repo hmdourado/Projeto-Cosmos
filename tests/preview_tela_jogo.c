@@ -9,10 +9,61 @@
 #include "../include/audio.h"
 #include "../include/video.h"
 #include "../include/personagem.h"
+#include "../include/ajuda.h"
 
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
+// Transfere para a interface a disponibilidade das ajudas e as eliminações atuais.
+static void atualizarEstadoAjudasTela(
+    const Partida *partida,
+    DadosTelaJogo *dados
+){
+    if (partida == NULL || dados == NULL) {
+        return;
+    }
+
+    // Uma ajuda permanece disponível enquanto ainda não tiver sido utilizada.
+    for (int i = 0; i < TOTAL_AJUDAS; i++) {
+        dados->ajudasDisponiveis[i] = !partida->ajudas.usadas[i];
+    }
+
+    // Reflete na tela as alternativas eliminadas pela Supernova.
+    for (int i = 0; i < QUANT_ALTERNATIVAS; i++) {
+        dados->alternativasEliminadas[i] = partida->ajudas.eliminadas[i] != 0;
+    }
+}
+
+// Converte a ação recebida da interface para o tipo reconhecido pelo módulo de ajuda.
+static bool obterTipoAjuda(AcaoTelaJogo acao, TipoAjuda *tipo){
+    if (tipo == NULL) {
+        return false;
+    }
+
+    switch (acao) {
+        case ACAO_TELA_JOGO_AJUDA_SUPERNOVA:
+            *tipo = AJUDA_SUPERNOVA;
+            return true;
+
+        case ACAO_TELA_JOGO_AJUDA_NASA:
+            *tipo = AJUDA_MISSAO;
+            return true;
+
+        case ACAO_TELA_JOGO_AJUDA_OBSERVATORIO:
+            *tipo = AJUDA_TELESCOPIO;
+            return true;
+
+        case ACAO_TELA_JOGO_AJUDA_ESPECIALISTA:
+            *tipo = AJUDA_ESPECIALISTA;
+            return true;
+
+        default:
+            return false;
+    }
+}
 
 // Atualiza os dados apresentados pela interface com as informações atuais da partida.
 static void atualizarDadosTela(
@@ -40,6 +91,9 @@ static void atualizarDadosTela(
     dados->premioAtual = partida->premioAtual;
     dados->premioGarantido = partida->premioGarantido;
     dados->mensagemStatus = mensagem;
+
+    // Mantém os botões e as alternativas sincronizados com o estado da partida.
+    atualizarEstadoAjudasTela(partida, dados);
 }
 
 // Converte a ação da interface na letra utilizada pelo módulo de jogo.
@@ -279,6 +333,7 @@ int main(int argc, char *argv[]){
     bool partidaEncerrada = false;
     bool vitoria = false;
     bool desistencia = false;
+    char mensagemAjuda[256] = "";
 
     bool aguardandoProximaPergunta = false;
     double instanteProximaPergunta = 0.0;
@@ -333,6 +388,7 @@ int main(int argc, char *argv[]){
             // Restaura a mensagem padrão após o período de feedback textual.
             if (fimMensagem > 0.0 && GetTime() >= fimMensagem) {
                 dadosTela.mensagemStatus = "Selecione uma alternativa.";
+                mensagemAjuda[0] = '\0';
                 fimMensagem = 0.0;
             }
 
@@ -461,14 +517,98 @@ int main(int argc, char *argv[]){
                     TraceLog(LOG_INFO, "Partida encerrada por desistencia.");
                 }
             }
-            // Informa quando uma ajuda for acionada, pois seus efeitos ainda não foram implementados.
-            else if (
-                acao >= ACAO_TELA_JOGO_AJUDA_SUPERNOVA &&
-                acao <= ACAO_TELA_JOGO_AJUDA_ESPECIALISTA
-            ) {
-                dadosTela.mensagemStatus = "Ajuda ainda nao implementada.";
-                fimMensagem = GetTime() + 1.5;
-                TraceLog(LOG_INFO, "Ajuda selecionada. Implementacao pendente.");
+            // Encaminha a ação selecionada para o módulo responsável pelas regras das ajudas.
+            else {
+                TipoAjuda tipoAjuda;
+
+                if (obterTipoAjuda(acao, &tipoAjuda)) {
+                    const Pergunta *pergunta = obterPerguntaAtual(&partida);
+                    ResultadoAjuda resultadoAjuda = aplicarAjuda(
+                        &partida.ajudas,
+                        pergunta,
+                        tipoAjuda
+                    );
+
+                    if (resultadoAjuda == AJUDA_SUCESSO && pergunta != NULL) {
+                        // Atualiza imediatamente os botões e as alternativas após a aplicação.
+                        atualizarEstadoAjudasTela(&partida, &dadosTela);
+
+                        switch (tipoAjuda) {
+                            case AJUDA_SUPERNOVA:
+                                snprintf(
+                                    mensagemAjuda,
+                                    sizeof(mensagemAjuda),
+                                    "Supernova: duas alternativas incorretas foram eliminadas."
+                                );
+                                break;
+
+                            case AJUDA_MISSAO:
+                            case AJUDA_TELESCOPIO: {
+                                const char *pista = obterTextoAjuda(pergunta, tipoAjuda);
+                                snprintf(
+                                    mensagemAjuda,
+                                    sizeof(mensagemAjuda),
+                                    "%s",
+                                    pista != NULL ? pista : "Pista indisponivel."
+                                );
+                                break;
+                            }
+
+                            case AJUDA_ESPECIALISTA:
+                                snprintf(
+                                    mensagemAjuda,
+                                    sizeof(mensagemAjuda),
+                                    "Especialista sugere a alternativa %c (%d%% de chance de acerto).",
+                                    partida.ajudas.sugestaoEspecialista,
+                                    obterChanceEspecialista(pergunta->nivel)
+                                );
+                                break;
+
+                            default:
+                                snprintf(
+                                    mensagemAjuda,
+                                    sizeof(mensagemAjuda),
+                                    "Ajuda aplicada com sucesso."
+                                );
+                                break;
+                        }
+
+                        dadosTela.mensagemStatus = mensagemAjuda;
+                        fimMensagem = GetTime() + 5.5;
+
+                        TraceLog(LOG_INFO, "Ajuda %d aplicada com sucesso.", tipoAjuda);
+                    } else {
+                        // Explica por que a ajuda não pôde ser aplicada sem consumir outro uso.
+                        const char *erro = "Nao foi possivel aplicar a ajuda.";
+
+                        switch (resultadoAjuda) {
+                            case AJUDA_JA_USADA:
+                                erro = "Esta ajuda ja foi utilizada nesta partida.";
+                                break;
+                            case AJUDA_SEM_CONTEUDO:
+                                erro = "Esta ajuda nao possui conteudo para esta pergunta.";
+                                break;
+                            case AJUDA_NAO_PERMITIDA:
+                                erro = "Esta ajuda nao pode ser aplicada neste momento.";
+                                break;
+                            case AJUDA_INVALIDA:
+                                erro = "Nao foi possivel validar esta ajuda.";
+                                break;
+                            case AJUDA_SUCESSO:
+                                break;
+                        }
+
+                        snprintf(mensagemAjuda, sizeof(mensagemAjuda), "%s", erro);
+                        dadosTela.mensagemStatus = mensagemAjuda;
+                        fimMensagem = GetTime() + 2.5;
+
+                        TraceLog(
+                            LOG_WARNING,
+                            "Nao foi possivel aplicar a ajuda. Codigo: %d",
+                            resultadoAjuda
+                        );
+                    }
+                }
             }
         }
 
