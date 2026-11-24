@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 #ifdef _WIN32
     #include <direct.h>
@@ -15,11 +16,16 @@
 #ifdef _WIN32
     #include <io.h>
     #include <fcntl.h>
+
     #define ABRIR_PROCESSO _popen
     #define FECHAR_PROCESSO _pclose
+    #define MODO_LEITURA_VIDEO "rb"
+
 #else
     #define ABRIR_PROCESSO popen
     #define FECHAR_PROCESSO pclose
+    #define MODO_LEITURA_VIDEO "r"
+
 #endif
 
 #define VIDEO_LARGURA 1280
@@ -125,15 +131,19 @@ bool VideoInit(VideoBackground *video, const char *arquivo)
     TraceLog(LOG_INFO, "Comando FFmpeg: %s", comando);
     TraceLog(LOG_INFO, "Iniciando VideoInit...");
 
-    video->processo = ABRIR_PROCESSO(comando, "rb");
+    video->processo = ABRIR_PROCESSO(comando, MODO_LEITURA_VIDEO);
 
     if (video->processo == NULL)
-    {
-        TraceLog(LOG_ERROR, "Falha ao abrir processo FFmpeg");
+{
+    TraceLog(
+        LOG_ERROR,
+        "Falha ao abrir processo FFmpeg: %s",
+        strerror(errno)
+    );
 
-        VideoClose(video);
-        return false;
-    }
+    VideoClose(video);
+    return false;
+}
     TraceLog(LOG_INFO, "Processo FFmpeg iniciado");
 
 #ifdef _WIN32
