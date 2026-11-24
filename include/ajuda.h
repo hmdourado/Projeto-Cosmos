@@ -15,12 +15,12 @@ typedef enum {
     TOTAL_AJUDAS
 } TipoAjuda;
 
-/** @brief Uso por partida e alternativas eliminadas na pergunta atual. */
+/** @brief Controla os usos por partida e os efeitos da pergunta atual. */
 typedef struct {
     int usadas[TOTAL_AJUDAS];
-    int ativas[TOTAL_AJUDAS]; /**< Efeitos disponíveis na pergunta atual. */
+    int ativas[TOTAL_AJUDAS];
     int eliminadas[QUANT_ALTERNATIVAS];
-    char sugestaoEspecialista; /**< Sugestão guardada até a próxima pergunta. */
+    char sugestaoEspecialista;
 } EstadoAjudas;
 
 typedef enum {
@@ -31,25 +31,36 @@ typedef enum {
     AJUDA_INVALIDA
 } ResultadoAjuda;
 
-/** @brief Inicializa os usos da partida e os efeitos da pergunta. */
+/** @brief Inicializa os usos e os efeitos de todas as ajudas. */
 void inicializarAjudas(EstadoAjudas *ajudas);
 
-/** @brief Limpa os efeitos da pergunta anterior, preservando os usos gastos. */
+/** @brief Limpa os efeitos da pergunta anterior, preservando os usos consumidos. */
 void prepararAjudasPergunta(EstadoAjudas *ajudas);
 
-/** @brief Retorna a chance percentual do especialista, ou zero para nível inválido. */
+/** @brief Retorna a chance percentual do especialista ou zero para nível inválido. */
 int obterChanceEspecialista(NivelDificuldade nivel);
 
 /**
- * @brief Consulta a pista ou informação cadastrada para a pergunta.
- * @return Texto de duração estática, ou NULL se não houver conteúdo correspondente.
+ * @brief Retorna uma orientação textual para a ajuda solicitada.
+ * @param pergunta Pergunta atual, utilizada para determinar a dificuldade.
+ * @param tipo Tipo de ajuda textual solicitado.
+ * @return Texto estático de orientação ou NULL quando o tipo não possui texto.
+ * @note As orientações atuais são genéricas por dificuldade. A estrutura Pergunta
+ *       ainda não armazena pistas específicas por questão.
  */
 const char *obterTextoAjuda(const Pergunta *pergunta, TipoAjuda tipo);
 
 /**
- * @brief Aplica uma ajuda e registra seu uso somente em caso de sucesso.
- * @note A interface deve usar a função usarAjuda de jogo.h para validar a partida.
+ * @brief Aplica uma ajuda e registra seu uso somente quando a operação tem sucesso.
+ * @param ajudas Estado de utilização das ajudas na partida.
+ * @param pergunta Pergunta atualmente apresentada.
+ * @param tipo Tipo de ajuda solicitado.
+ * @return Resultado da aplicação da ajuda.
  */
-ResultadoAjuda aplicarAjuda(EstadoAjudas *ajudas, const Pergunta *pergunta, TipoAjuda tipo);
+ResultadoAjuda aplicarAjuda(
+    EstadoAjudas *ajudas,
+    const Pergunta *pergunta,
+    TipoAjuda tipo
+);
 
 #endif

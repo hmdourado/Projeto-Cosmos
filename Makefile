@@ -1,12 +1,26 @@
-
 CC = cc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 CPPFLAGS = -Iinclude
 
 MENU_SRC ?= src/menu.c
-BASE_SRC = src/pergunta.c src/cadastro.c src/arquivo.c src/jogo.c
-PAGINAS_SRC = src/telas/cadastro.c src/telas/jogo.c src/telas/ajuda.c src/telas/ranking.c
 
+# Modulos de regras e gerenciamento de dados.
+BASE_SRC = src/pergunta.c \
+           src/cadastro.c \
+           src/arquivo.c \
+           src/jogo.c \
+           src/ajuda.c
+
+# Modulos de interface grafica, audio e personagem.
+PAGINAS_SRC = src/telas/cadastro.c \
+              src/telas/jogo.c \
+              src/telas/ajuda.c \
+              src/telas/ranking.c \
+              src/telas/audio.c \
+              src/telas/personagem.c
+
+# Modulo de reproducao de video.
+VIDEO_SRC = src/video.c
 # Modulo de reproducao de video
 VIDEO_SRC = src/video.c
 

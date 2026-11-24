@@ -280,7 +280,16 @@ static void desenharTextoMultilinha(
             posicaoY += tamanho + 6.0f;
             snprintf(linha, sizeof(linha), "%s", palavra);
         } else {
-            snprintf(linha, sizeof(linha), "%s", candidata);
+            // Limita a cópia à capacidade disponível no vetor de destino.
+            size_t tamanhoCandidata = strlen(candidata);
+
+            if (tamanhoCandidata >= sizeof(linha)) {
+                tamanhoCandidata = sizeof(linha) - 1;
+            }
+
+            // Copia o conteúdo e garante o terminador da string.
+            memcpy(linha, candidata, tamanhoCandidata);
+            linha[tamanhoCandidata] = '\0';
         }
     }
 
