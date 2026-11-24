@@ -449,9 +449,9 @@ static void jogarNoTerminal(Cadastro *cadastro, const char *ranking){
     puts("Quando a pergunta não tiver pista ou contexto, o uso da ajuda é preservado.");
     while (partida.estado == PARTIDA_EM_ANDAMENTO){
         const Pergunta *pergunta = obterPerguntaAtual(&partida);
-        printf("\nPergunta %d de %d - %s\n", partida.indiceAtual + 1,
+        printf("\nPergunta %d de %d - %s\n\n", partida.indiceAtual + 1,
                TOTAL_PERGUNTAS_PARTIDA, obterNomeNivel(pergunta->nivel));
-        printf("Prêmio atual: R$ %d | Garantido: R$ %d | Valendo: R$ %d\n",
+        printf("Prêmio atual: R$ %d | Garantido: R$ %d | Valendo: R$ %d\n\n",
                partida.premioAtual, partida.premioGarantido,
                obterPremioPergunta(partida.indiceAtual + 1));
         printf("%s\n\n", pergunta->enunciado);
