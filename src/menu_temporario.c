@@ -454,7 +454,7 @@ static void jogarNoTerminal(Cadastro *cadastro, const char *ranking){
         printf("Prêmio atual: R$ %d | Garantido: R$ %d | Valendo: R$ %d\n",
                partida.premioAtual, partida.premioGarantido,
                obterPremioPergunta(partida.indiceAtual + 1));
-        printf("%s\n", pergunta->enunciado);
+        printf("%s\n\n", pergunta->enunciado);
         for (int i = 0; i < QUANT_ALTERNATIVAS; i++){
             if (!partida.ajudas.eliminadas[i]){
                 printf("%c) %s\n", 'A' + i, pergunta->alternativas[i]);
@@ -474,11 +474,25 @@ static void jogarNoTerminal(Cadastro *cadastro, const char *ranking){
                    partida.ajudas.sugestaoEspecialista, obterChanceEspecialista(pergunta->nivel));
         }
         const char *nomes[TOTAL_AJUDAS] = {"Supernova 50/50", "Missão Espacial", "Telescópio", "Especialista"};
+        int temAjudaDisponivel = 0;
         for (int i = 0; i < TOTAL_AJUDAS; i++){
-            printf("%d - %s [%s]\n", i + 1, nomes[i],
-                   partida.ajudas.usadas[i] ? "usada" : "disponível");
+            if (partida.ajudas.usadas[i] ||
+                ((i == AJUDA_MISSAO || i == AJUDA_TELESCOPIO) &&
+                 obterTextoAjuda(pergunta, (TipoAjuda)i) == NULL)){
+                continue;
+            }
+            if (!temAjudaDisponivel){
+                puts("\nVocê possui algumas opções de ajudas:");
+                temAjudaDisponivel = 1;
+            }
+            printf("%d - %s [disponível]\n", i + 1, nomes[i]);
         }
-        puts("Responda A-D, use 1-4 para pedir ajuda ou S para desistir:");
+        if (!temAjudaDisponivel){
+            puts("\nVocê já utilizou todas as ajudas disponíveis.");
+        }
+        puts(temAjudaDisponivel
+             ? "\nResponda A-D, use 1-4 para pedir ajuda ou S para desistir:"
+             : "\nResponda A-D ou S para desistir:");
         fflush(stdout);
         int opcao = lerOpcao();
         if (opcao == 'S' || opcao == EOF){
