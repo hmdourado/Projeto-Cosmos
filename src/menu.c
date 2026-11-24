@@ -24,10 +24,13 @@ void executarMenu(Cadastro *cadastro)
 {
     (void)cadastro; // Evita warning enquanto não utilizamos o cadastro.
     
-    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-    SetConfigFlags(FLAG_FULLSCREEN_MODE);
+    SetConfigFlags(FLAG_WINDOW_UNDECORATED); // TELA SEM ADORNO SUPERIOR
+   // SetConfigFlags(FLAG_FULLSCREEN_MODE); // TELA CHEIA
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     InitWindow(1280, 720, "Cosmos");
+
+ 
     //fontes
 
     //fonteCosmos = LoadFontEx("assets/fonts/Nasalization Rg.otf");
@@ -66,9 +69,11 @@ void executarMenu(Cadastro *cadastro)
     
     while (!WindowShouldClose())
     {
+        if (IsKeyPressed(KEY_F11)){
+            ToggleFullscreen();
+        }
         // Atualização
         VideoUpdate(&fundo);
-
         // Renderização
         BeginDrawing();
 
@@ -120,6 +125,14 @@ void executarMenu(Cadastro *cadastro)
                  15,       // Tamanho da fonte
                  2,
                  RED
+            );
+            DrawTextEx(
+                fonteMenuSecundaria,
+                "CONFIGURACOES",
+                 (Vector2){350,650},
+                 15,       // Tamanho da fonte
+                 2,
+                 WHITE
             );
 
         EndDrawing();
