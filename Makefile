@@ -4,8 +4,7 @@ CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 CPPFLAGS = -Iinclude
 
 MENU_SRC ?= src/menu.c
-BASE_SRC = src/pergunta.c src/cadastro.c src/arquivo.c src/jogo.c src/ajuda.c src/pistas.c
-TERMINAL_SRC = src/menu_temporario.c src/ranking.c
+BASE_SRC = src/pergunta.c src/cadastro.c src/arquivo.c src/jogo.c
 PAGINAS_SRC = src/telas/cadastro.c src/telas/jogo.c src/telas/ajuda.c src/telas/ranking.c
 
 # Modulo de reproducao de video

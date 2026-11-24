@@ -1,0 +1,56 @@
+# Projeto Cosmos — pacote original de áudio
+
+Todos os arquivos deste pacote foram sintetizados especificamente para o Projeto Cosmos.
+Não foram extraídos de jogos, filmes ou bibliotecas de terceiros.
+
+## Arquivos
+
+| Arquivo | Evento recomendado |
+|---|---|
+| `ambiente_espacial.wav` | Ambiência contínua da tela de perguntas (loop de 30 s) |
+| `hover.wav` | Cursor entra em um botão |
+| `selecao.wav` | Clique/seleção de alternativa ou botão |
+| `transicao.wav` | Transição entre perguntas |
+| `resposta_correta.wav` | Resposta correta |
+| `resposta_incorreta.wav` | Resposta incorreta |
+| `marco_seguranca.wav` | Atingir as perguntas 5 ou 10 |
+| `vitoria.wav` | Conclusão das 15 perguntas |
+
+## Formato
+
+- WAV PCM
+- 16 bits
+- Estéreo
+- 44.100 Hz
+- Compatível com `LoadSound()` e `LoadMusicStream()` da Raylib.
+
+## Instalação no Projeto Cosmos
+
+Extraia os arquivos para:
+
+`Projeto-Cosmos/assets/audio/`
+
+Estrutura esperada:
+
+```text
+assets/
+  audio/
+    ambiente_espacial.wav
+    hover.wav
+    selecao.wav
+    transicao.wav
+    resposta_correta.wav
+    resposta_incorreta.wav
+    marco_seguranca.wav
+    vitoria.wav
+```
+
+## Uso na Raylib
+
+- Inicialize o dispositivo com `InitAudioDevice()` depois de `InitWindow()`.
+- Carregue `ambiente_espacial.wav` com `LoadMusicStream()` e habilite o loop.
+- Carregue os efeitos curtos com `LoadSound()`.
+- Atualize a música com `UpdateMusicStream()` a cada quadro.
+- Ao encerrar, descarregue todos os sons e a música antes de `CloseAudioDevice()`.
+
+Ajuste os volumes no jogo. Recomenda-se manter a ambiência em volume baixo e os efeitos de interface discretos.
