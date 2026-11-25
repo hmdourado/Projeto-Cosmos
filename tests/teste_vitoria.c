@@ -1,15 +1,25 @@
-
 /**
  * @file teste_vitoria.c
- * @brief Executavel independente para testar a tela de vitoria do Cosmos.
+ * @brief Pré-visualização independente da vitória real do Projeto Cosmos.
+ *
+ * Carrega o cadastro, inicia uma partida pelas regras reais e responde cada
+ * pergunta usando a respostaCorreta do próprio registro. Ao receber
+ * RESPOSTA_VITORIA, abre a tela cinematográfica original de vitória.
+ *
+ * Este executável não altera main.c, menu.c, o cadastro, o binário de perguntas
+ * nem o ranking oficial.
  */
 
-#include "../include/raylib.h"
-#include "../include/vitoria.h"
-#include "../include/fontes.h"
+#include "raylib.h"
+#include "cadastro.h"
+#include "arquivo.h"
+#include "jogo.h"
+#include "vitoria.h"
+#include "fontes.h"
 
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define TAM_NOME_TESTE 64
 
@@ -18,14 +28,7 @@ int main(void)
     // Inicializa a janela.
     SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(1280, 720, "COSMOS - Teste da Tela de Vitoria");
-    // Inicializa o dispositivo de áudio da Raylib.
-    InitAudioDevice();
 
-    bool audioDisponivel = IsAudioDeviceReady();
-
-    if (!audioDisponivel) {
-        TraceLog(LOG_WARNING, "Audio indisponivel no teste.");
-    }
     if (!IsWindowReady()) {
         fprintf(stderr, "Nao foi possivel inicializar a janela.\n");
         return 1;
@@ -49,10 +52,7 @@ int main(void)
 
     // Inicializa o estado visual e o video de comemoracao.
     EstadoVisualVitoria estado = {0};
-    inicializarEstadoVisualVitoria(
-        &estado,
-        audioDisponivel
-    );
+    inicializarEstadoVisualVitoria(&estado);
 
     // Simulacao do registro no ranking.
     char nomeJogador[TAM_NOME_TESTE] = "";
@@ -104,59 +104,67 @@ int main(void)
                         nomeJogador
                     );
                 } else {
-                    snprintf(
-                        mensagemRanking,
-                        sizeof(mensagemRanking),
-                        "Digite um nome antes de continuar."
-                    );
+                    estado = DEMO_FALHA;
+                    snprintf(mensagem, sizeof(mensagem),
+                             "A resposta %d retornou resultado inesperado (%d).",
+                             numeroPergunta, resultado);
                 }
-            }
-
-        } else {
-            // R permite testar novamente o estado inicial.
-            if (IsKeyPressed(KEY_R)) {
-                rankingRegistrado = false;
-                nomeJogador[0] = '\0';
-                mensagemRanking[0] = '\0';
             }
         }
 
+        if (estado == DEMO_VITORIA && visualVitoriaInicializado) {
+            atualizarEstadoVisualVitoria(&visualVitoria);
+        }
+
         BeginDrawing();
+            if (estado == DEMO_VITORIA && visualVitoriaInicializado) {
+                /* A tela original de vitória e seu vídeo são renderizados aqui. */
+                desenharTelaVitoria(
+                    &visualVitoria,
+                    &dadosVitoria,
+                    "",
+                    false,
+                    ""
+                );
 
-            // Renderiza diretamente a tela de vitoria.
-            desenharTelaVitoria(
-                &estado,
-                &dados,
-                nomeJogador,
-                rankingRegistrado,
-                mensagemRanking
-            );
-
-            // Instrucoes de teste no lado direito.
-            DrawText(
-                "TESTE DA TELA DE VITORIA",
-                420, 30, 18, SKYBLUE
-            );
-
-            DrawText(
-                "ESC: ENCERRAR TESTE",
-                420, GetScreenHeight() - 55,
-                12, LIGHTGRAY
-            );
-
-            DrawText(
-                "R: REINICIAR REGISTRO",
-                420, GetScreenHeight() - 35,
-                12, LIGHTGRAY
-            );
-
+                /* Identifica claramente que esta visualização não altera o ranking. */
+                DrawRectangleRounded(
+                    (Rectangle){GetScreenWidth() - 390.0f,
+                                GetScreenHeight() - 54.0f, 370.0f, 34.0f},
+                    0.18f, 8, (Color){4, 15, 31, 210}
+                );
+                DrawText("PRE-VISUALIZACAO | RANKING NAO ALTERADO",
+                         GetScreenWidth() - 376,
+                         GetScreenHeight() - 43,
+                         10,
+                         COR_CIANO_DEMO);
+                DrawText("ESC: FECHAR",
+                         GetScreenWidth() - 125,
+                         18,
+                         10,
+                         COR_TEXTO_DEMO);
+            } else {
+                desenharTelaProgresso(&partida, respondidas, mensagem, estado);
+            }
         EndDrawing();
     }
 
-    // Libera os recursos antes de fechar a janela.
-    liberarEstadoVisualVitoria(&estado);
+    if (visualVitoriaInicializado) {
+        liberarEstadoVisualVitoria(&visualVitoria);
+    }
+
+    /* Descarrega as três fontes; o módulo fontes.c não libera a fonteLogo. */
+    UnloadFont(fonteTitulo);
+    UnloadFont(fontePrincipal);
+    UnloadFont(fonteLogo);
 
     CloseWindow();
+    liberarCadastro(&cadastro);
 
-    return 0;
+    if (estado == DEMO_FALHA) {
+        fprintf(stderr, "Demonstracao interrompida: %s\n", mensagem);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

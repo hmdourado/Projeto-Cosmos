@@ -1,8 +1,7 @@
 # Jogo do Milhão Cósmico
 
-Jogo de perguntas e respostas com temática de Astronomia, desenvolvido em linguagem C para a disciplina **Fundamentos de Programação 2 (FDCO2B)**, do curso de Engenharia de Computação da **Universidade Tecnológica Federal do Paraná (UTFPR) — Campus Apucarana**.
+**Cosmos** é um jogo de perguntas e respostas sobre Astronomia, desenvolvido em linguagem C como projeto acadêmico da disciplina de Fundamentos de Programação 2, na Universidade Tecnológica Federal do Paraná (UTFPR) — Campus Apucarana. O projeto combina lógica de jogo, gerenciamento dinâmico de dados, persistência em arquivos e uma interface gráfica construída com Raylib.
 
-> **Status:** em desenvolvimento. A camada de interface gráfica com Raylib está em integração com os módulos de dados e regras da partida.
 
 ## Sobre o projeto
 
@@ -29,6 +28,7 @@ O sistema implementa a estrutura de um jogo no estilo *Jogo do Milhão*, permiti
 - **Raylib** para a interface gráfica
 - **GCC MinGW-w64 64 bits** no Windows
 - **GNU Make** para automatizar a compilação
+- **FFmpeg:** suporte à reprodução de vídeo.
 - **Git** para controle de versão
 
 ## Estrutura do projeto
@@ -48,33 +48,6 @@ Projeto-Cosmos/
 A estrutura pode ser ampliada conforme a implementação dos módulos e das funcionalidades criativas.
 
 ## Como compilar e executar
-
-### Versão de terminal
-
-Na raiz do projeto, com um compilador C11 e Make:
-
-```sh
-make run-terminal
-make test
-```
-
-`make run-terminal` compila e abre o jogo no próprio terminal. `make test` executa os testes sem abrir uma janela. No Windows com MinGW, use `mingw32-make run-terminal CC=gcc` e `mingw32-make test CC=gcc` se essa for a instalação disponível.
-
-Para fazer a demonstração com arquivos separados dos dados padrão, use:
-
-```sh
-COSMOS_RANKING=build/ranking-demo.tsv make run-terminal \
-  ARGS="build/perguntas-demo.dat dados/perguntas.csv"
-```
-
-No PowerShell, configure primeiro `$env:COSMOS_RANKING = 'build/ranking-demo.tsv'` e passe os mesmos caminhos em `ARGS`.
-
-| Comando | Resultado |
-| --- | --- |
-| `make run-terminal` | Compila e executa a versão de texto, sem vincular a Raylib. |
-| `make test` | Executa as suítes de jogo, ajudas e integração de arquivos. |
-
-A versão gráfica requer uma Raylib compatível com o sistema. O Makefile usa uma biblioteca para Windows ou opções de ligação de Linux. No macOS, a configuração padrão pode falhar com `library 'GL' not found`. O alvo de terminal funciona sem essas bibliotecas gráficas.
 
 ### Windows
 
@@ -226,8 +199,7 @@ Abra `build/doxygen/html/index.html` para consultar as estruturas, funções e a
 
 - **Instituição:** Universidade Tecnológica Federal do Paraná (UTFPR), Campus Apucarana
 - **Curso:** Engenharia de Computação
-- **Disciplina:** Fundamentos de Programação 2 — FDCO2B (2026/2)
-- **Docente:** Profa. Muriel de Souza Godoi
+- **Disciplina:** Fundamentos de Programação 2 — (2026/2)
 - **Tema:** Astronomia
 
 ---

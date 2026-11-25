@@ -5,7 +5,7 @@ CPPFLAGS = -Iinclude
 
 MENU_SRC ?= src/menu.c
 
-TEST_VITORIA = build/teste_vitoria$(EXE_EXT)
+TEST_VITORIA_BIN = build/teste_vitoria$(EXE_EXT)
 
 # Modulos de regras e gerenciamento de dados.
 BASE_SRC = src/pergunta.c \
@@ -49,18 +49,21 @@ TEST_INTEGRACAO = build/teste_integracao$(EXE_EXT)
 TEST_AJUDA = build/test_ajuda$(EXE_EXT)
 PREVIEW_JOGO = build/preview_tela_jogo$(EXE_EXT)
 # Preview independente da tela de vitória.
+TEST_VITORIA_BIN = build/teste_vitoria$(EXE_EXT)
+
 TEST_VITORIA_SRC = tests/teste_vitoria.c \
+                   $(BASE_SRC) \
                    src/telas/vitoria.c \
                    $(VIDEO_SRC) \
                    src/fontes.c
 
-$(TEST_VITORIA): $(TEST_VITORIA_SRC) $(HEADERS) Makefile | build
+$(TEST_VITORIA_BIN): $(TEST_VITORIA_SRC) $(HEADERS) Makefile | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_VITORIA_SRC) $(LDFLAGS) $(LDLIBS) $(RAYLIB_LIBS) -o $@
 
-teste-vitoria: $(TEST_VITORIA)
-	./$(TEST_VITORIA)
-.PHONY: all clean run run-terminal run-grafico test preview teste-vitoria
-all: $(PROGRAMA)
+teste-vitoria: $(TEST_VITORIA_BIN)
+	./$(TEST_VITORIA_BIN)
+
+.PHONY: teste-vitoria
 
 build:
 	mkdir -p build
