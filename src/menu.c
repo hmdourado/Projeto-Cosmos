@@ -149,7 +149,7 @@ static bool desenharBotaoPremium(
     int yTitulo = area.height < 44.0f ? 9 : 12;
     DrawTextEx(obterFonteTitulo(),titulo, (Vector2){(int)area.x + 20, (int)area.y + yTitulo}, fonteTitulo,2, COR_TEXTO);
     if (descricao != NULL) {
-        DrawText(descricao, (int)area.x + 20, (int)area.y + 39, 12, COR_TEXTO_SEC);
+        DrawTextEx(obterFonteTitulo(), descricao, (Vector2){(int)area.x + 20, (int)area.y + 39}, 12,1, COR_TEXTO_SEC);
     }
     if (atalho != NULL) {
         DrawText(atalho,
@@ -1171,7 +1171,7 @@ static void desenharTelaBanco(
     const float largura = (float)GetScreenWidth();
     const float altura = (float)GetScreenHeight();
     desenharCabecalhoTela("BANCO DE PERGUNTAS",
-        "Consulte, filtre, cadastre, edite e remova questoes do acervo.");
+        "Consulte, filtre, cadastre, edite e remova questões do acervo.");
 
     Rectangle painel = {42.0f, 198.0f, largura - 84.0f, altura - 288.0f};
     if (painel.height < 300.0f) painel.height = 300.0f;
@@ -1397,10 +1397,15 @@ void executarMenu(Cadastro *cadastro) {
         return;
     }
 
-    SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
+    //SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
     
     InitWindow(1280, 720, "COSMOS");
 
+    Image icone = LoadImage("assets/images/icone.png");
+
+    SetWindowIcon(icone);
+
+    UnloadImage(icone);
     inicializarFontes();
     if (!IsWindowReady()) {
         TraceLog(LOG_ERROR, "Nao foi possivel inicializar a janela principal.");
@@ -1488,7 +1493,7 @@ void executarMenu(Cadastro *cadastro) {
                 DrawText("15", 86, (int)painelInfo.y + 17, 28, COR_DOURADO);
                 DrawTextEx(obterFontePrincipal(),"PERGUNTAS", (Vector2){ 88, (int)painelInfo.y + 51}, 9,2, COR_TEXTO_SEC);
                 DrawText("80+", 210, (int)painelInfo.y + 17, 28, COR_CIANO);
-                DrawTextEx(obterFontePrincipal(),"QUESTOES", (Vector2){212, (int)painelInfo.y + 51},9,2, COR_TEXTO_SEC);
+                DrawTextEx(obterFontePrincipal(),"QUESTÕES", (Vector2){212, (int)painelInfo.y + 51},9,2, COR_TEXTO_SEC);
                 DrawText("04", 337, (int)painelInfo.y + 17, 28, COR_VERDE);
                 DrawTextEx(obterFontePrincipal(),"AJUDAS", (Vector2){339, (int)painelInfo.y + 51},9,2, COR_TEXTO_SEC);
 
@@ -1500,12 +1505,12 @@ void executarMenu(Cadastro *cadastro) {
                 if (desenharBotaoPremium((Rectangle){x, y, w, h},
                     "INICIAR PARTIDA", "Comece uma nova jornada de 15 perguntas.", "01  /  PLAY", true)) {
                     executarPartidaRaylib(cadastro, &audio, audioDisponivel, &fundo, videoDisponivel);
-                    snprintf(mensagemMenu, sizeof(mensagemMenu), "Voce retornou ao centro de comando.");
+                    snprintf(mensagemMenu, sizeof(mensagemMenu), "Você retornou ao centro de comando.");
                     instanteMensagem = GetTime() + 2.5;
                 }
                 y += h + gap;
                 if (desenharBotaoPremium((Rectangle){x, y, w, h},
-                    "BANCO DE PERGUNTAS", "Consulte e gerencie o acervo de questoes.", "02  /  DATA", false)) {
+                    "BANCO DE PERGUNTAS", "Consulte e gerencie o acervo de questões.", "02  /  DATA", false)) {
                     telaAtual = MENU_BANCO;
                     scrollBanco = 0.0f;
                     idSelecionado = 0;
@@ -1531,7 +1536,7 @@ void executarMenu(Cadastro *cadastro) {
                     confirmarSaida = true;
                 }
 
-                DrawText("UTFPR  |  ENGENHARIA DE COMPUTACAO  |  V.1.0.0",
+                DrawText("UTFPR  |  ENGENHARIA DE COMPUTAÇÃO  |  V.1.0.0",
                          66, (int)altura - 34, 10, (Color){185, 205, 226, 190});
                 DrawText("WASD / MOUSE  -  NAVEGACAO", (int)largura - 442,
                          (int)altura - 27, 9, (Color){185, 205, 226, 190});
@@ -1546,7 +1551,7 @@ void executarMenu(Cadastro *cadastro) {
                     desenharPainel(modal, (Color){7, 20, 42, 250}, COR_DOURADO);
                     DrawText("SALVAR E ENCERRAR?", (int)modal.x + 35,
                              (int)modal.y + 30, 20, COR_TEXTO);
-                    DrawText("O banco de perguntas sera gravado em arquivo binario.",
+                    DrawText("O banco de perguntas será gravado em arquivo binario.",
                              (int)modal.x + 35, (int)modal.y + 68, 12, COR_TEXTO_SEC);
                     Rectangle confirmar = {modal.x + 35, modal.y + 118, 165, 48};
                     Rectangle cancelar = {modal.x + 240, modal.y + 118, 165, 48};
