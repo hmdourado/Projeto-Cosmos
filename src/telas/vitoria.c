@@ -77,11 +77,12 @@ static void desenharEstatistica(
         area, 0.12f, 10, 1.2f, COR_BORDA
     );
 
-    DrawText(
+    DrawTextEx(
+        obterFonteTitulo(),
         titulo,
-        (int)area.x + 18,
-        (int)area.y + 13,
+        (Vector2){(int)area.x + 18, (int)area.y + 13},
         11,
+        2,
         COR_SECUNDARIA
     );
 
@@ -206,11 +207,11 @@ void desenharTelaVitoria(
         centroX,
         painel.y + 25.0f,
         21.0f,
-        COR_DOURADO
+        WHITE
     );
 
     desenharTituloCentralizado(
-        "MISSAO CUMPRIDA, ASTRONAUTA!",
+        "MISSAO CUMPRIDA",
         centroX,
         painel.y + 59.0f,
         10.0f,
