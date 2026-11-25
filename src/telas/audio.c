@@ -8,7 +8,7 @@
 #include <string.h>
 
 #define DIRETORIO_AUDIO "assets/audio/"
-#define ARQUIVO_AMBIENTE "ambiente_espacial.wav"
+#define ARQUIVO_AMBIENTE "themesong.wav"
 
 // Mantém os caminhos dos efeitos na mesma ordem definida em EfeitoAudio.
 static const char *ARQUIVOS_EFEITOS[QUANT_EFEITOS_AUDIO] = {
