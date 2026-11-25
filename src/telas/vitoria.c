@@ -284,7 +284,7 @@ void desenharTelaVitoria(
     /* Prêmio conquistado. */
     desenharEstatistica(
         (Rectangle){xCard, yCard, larguraCard, alturaCard},
-        "PREMIO FINAL",
+        "PRÊMIO FINAL",
         premio,
         COR_DOURADO
     );
@@ -294,7 +294,7 @@ void desenharTelaVitoria(
     /* Prêmio garantido. */
     desenharEstatistica(
         (Rectangle){xCard, yCard, larguraCard, alturaCard},
-        "PREMIO GARANTIDO",
+        "PRÊMIO GARANTIDO",
         garantido,
         COR_CIANO
     );
@@ -317,7 +317,7 @@ void desenharTelaVitoria(
 
     DrawText(
         TextFormat(
-            "DESAFIOS CONCLUIDOS: %u / %u",
+            "DESAFIOS CONCLUÍDOS: %u / %u",
             dados->perguntasRespondidas,
             dados->totalPerguntas
         ),
