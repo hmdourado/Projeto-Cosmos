@@ -4,7 +4,7 @@
  */
 #include "../../include/telas.h"
 #include "../../include/jogo.h"
-
+#include "../../include/fontes.h"
 #include <ctype.h>
 #include <math.h>
 #include <stddef.h>
@@ -332,7 +332,7 @@ static void desenharEstrelas(const EstadoVisualTelaJogo *estado) {
 // Desenha a identificação superior e o progresso da partida.
 static void desenharCabecalho(const DadosTelaJogo *dados) {
     int largura = GetScreenWidth();
-    DrawText("COSMOS", 26, 14, 27, COR_DOURADO);
+    DrawTextEx(obterFonteLogo(),"COSMOS", (Vector2){26, 14,},27,2, COR_TEXTO);
     DrawText("DESAFIO COSMICO  /  CENTRAL DE COMANDO", 28, 45, 11, COR_TEXTO_SEC);
 
     char progresso[64];
@@ -418,8 +418,15 @@ static void desenharPainelPergunta(const DadosTelaJogo *dados, Rectangle area) {
     char valor[40];
     formatarPremio(premio, valor, sizeof(valor));
 
-    DrawText(TextFormat("PERGUNTA %02u", dados->numeroPergunta),
-             (int)area.x + 22, (int)area.y + 15, 14, COR_DESTAQUE);
+    DrawTextEx(
+        obterFontePrincipal(),
+        TextFormat("PERGUNTA %02u", dados->numeroPergunta),
+        (Vector2){ (int)area.x + 22, (int)area.y + 15},
+        14,
+        2,
+        COR_DESTAQUE
+    );
+
     int larguraValor = MeasureText(valor, 14);
     DrawText(valor, (int)(area.x + area.width - larguraValor - 22.0f),
              (int)area.y + 15, 14, COR_DOURADO);
@@ -606,7 +613,7 @@ static void desenharAreaPersonagem(
 
     const char *fala = dados->mensagemStatus;
     if (fala == NULL || fala[0] == '\0') {
-        fala = "O universo esta cheio de descobertas. Vamos comecar!";
+        fala = "O universo está cheio de descobertas. Vamos comecar!";
     }
     Rectangle areaFala = {
         layout->balaoPersonagem.x + 12.0f,

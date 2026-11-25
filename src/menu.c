@@ -392,7 +392,7 @@ static void executarPartidaRaylib(
     bool videoDisponivel
 ) {
     if (cadastro == NULL || cadastro->quantidade == 0) {
-        TraceLog(LOG_WARNING, "Nao ha perguntas cadastradas para iniciar a partida.");
+        TraceLog(LOG_WARNING, "Naão há perguntas cadastradas para iniciar a partida.");
         return;
     }
 
@@ -400,7 +400,7 @@ static void executarPartidaRaylib(
     inicializarPartida(&partida);
     ResultadoInicio inicio = iniciarPartida(&partida, cadastro);
     if (inicio != INICIO_SUCESSO) {
-        TraceLog(LOG_WARNING, "Nao foi possivel iniciar a partida. Codigo: %d", inicio);
+        TraceLog(LOG_WARNING, "Não foi possivel iniciar a partida. Codigo: %d", inicio);
         return;
     }
 
