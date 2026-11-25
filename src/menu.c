@@ -18,6 +18,7 @@
 #include "../include/ajuda.h"
 #include "../include/telas.h"
 #include "../include/ranking.h"
+#include "../include/fontes.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -146,7 +147,7 @@ static bool desenharBotaoPremium(
 
     int fonteTitulo = area.height < 44.0f ? 15 : 20;
     int yTitulo = area.height < 44.0f ? 9 : 12;
-    DrawText(titulo, (int)area.x + 20, (int)area.y + yTitulo, fonteTitulo, COR_TEXTO);
+    DrawTextEx(obterFonteTitulo(),titulo, (Vector2){(int)area.x + 20, (int)area.y + yTitulo}, fonteTitulo,2, COR_TEXTO);
     if (descricao != NULL) {
         DrawText(descricao, (int)area.x + 20, (int)area.y + 39, 12, COR_TEXTO_SEC);
     }
@@ -1387,6 +1388,8 @@ static void desenharTelaConfiguracoes(
     DrawText("Use os botoes + e - para ajustar os volumes.", 105, 485, 12, COR_TEXTO_SEC);
 }
 
+
+
 // Executa o menu principal, as telas auxiliares e o gerenciamento dos recursos.
 void executarMenu(Cadastro *cadastro) {
     if (cadastro == NULL) {
@@ -1395,7 +1398,10 @@ void executarMenu(Cadastro *cadastro) {
     }
 
     SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
-    InitWindow(1280, 720, "COSMOS | Jogo do Milhao Cosmico");
+    
+    InitWindow(1280, 720, "COSMOS");
+
+    inicializarFontes();
     if (!IsWindowReady()) {
         TraceLog(LOG_ERROR, "Nao foi possivel inicializar a janela principal.");
         return;
@@ -1414,6 +1420,8 @@ void executarMenu(Cadastro *cadastro) {
     } else {
         TraceLog(LOG_WARNING, "Sistema de audio indisponivel.");
     }
+
+
 
     Font fonteCosmos = GetFontDefault();
     bool fonteCarregada = false;
@@ -1471,21 +1479,18 @@ void executarMenu(Cadastro *cadastro) {
             if (telaAtual == MENU_INICIO) {
                 DrawTextEx(fonteCosmos, "COSMOS", (Vector2){58.0f, 70.0f},
                            largura < 1100 ? 68.0f : 92.0f, 2.0f, COR_TEXTO);
-                DrawText("JOGO DO MILHAO COSMICO", 66, 166, 16, COR_CIANO);
                 DrawLine(66, 200, 390, 200, (Color){46, 190, 240, 170});
-                DrawText("EXPLORE O UNIVERSO.\nTESTE SEU CONHECIMENTO.",
-                         66, 229, 21, COR_TEXTO);
-                DrawText("Quinze desafios. Cinco niveis. Uma jornada ate um milhao.",
-                         66, 294, 12, COR_TEXTO_SEC);
-
+                DrawTextEx(obterFontePrincipal(),"EXPLORE O UNIVERSO.\nTESTE SEU CONHECIMENTO.",(Vector2){66,229},21,2, COR_TEXTO);
+                DrawTextEx(obterFontePrincipal(), "Quinze desafios. Cinco niveis. Uma jornada até um milhao.", (Vector2){66,294},12,2, COR_TEXTO_SEC);
+               
                 Rectangle painelInfo = {66, altura - 160.0f, 390, 92};
                 desenharPainel(painelInfo, (Color){5, 19, 40, 190}, COR_BORDA);
                 DrawText("15", 86, (int)painelInfo.y + 17, 28, COR_DOURADO);
-                DrawText("PERGUNTAS", 88, (int)painelInfo.y + 51, 9, COR_TEXTO_SEC);
+                DrawTextEx(obterFontePrincipal(),"PERGUNTAS", (Vector2){ 88, (int)painelInfo.y + 51}, 9,2, COR_TEXTO_SEC);
                 DrawText("80+", 210, (int)painelInfo.y + 17, 28, COR_CIANO);
-                DrawText("QUESTOES", 212, (int)painelInfo.y + 51, 9, COR_TEXTO_SEC);
+                DrawTextEx(obterFontePrincipal(),"QUESTOES", (Vector2){212, (int)painelInfo.y + 51},9,2, COR_TEXTO_SEC);
                 DrawText("04", 337, (int)painelInfo.y + 17, 28, COR_VERDE);
-                DrawText("AJUDAS", 339, (int)painelInfo.y + 51, 9, COR_TEXTO_SEC);
+                DrawTextEx(obterFontePrincipal(),"AJUDAS", (Vector2){339, (int)painelInfo.y + 51},9,2, COR_TEXTO_SEC);
 
                 float x = largura - 440.0f;
                 float y = altura * 0.19f;

@@ -12,7 +12,8 @@ BASE_SRC = src/pergunta.c \
            src/jogo.c \
            src/ajuda.c \
            src/pistas.c \
-           src/ranking.c
+           src/ranking.c \
+		  
 
 # Modulos de interface grafica, audio e personagem.
 PAGINAS_SRC = src/telas/cadastro.c \
@@ -20,7 +21,8 @@ PAGINAS_SRC = src/telas/cadastro.c \
               src/telas/ajuda.c \
               src/telas/ranking.c \
               src/telas/audio.c \
-              src/telas/personagem.c
+              src/telas/personagem.c\
+			  src/fontes.c
 
 # Modulo de reproducao de video.
 VIDEO_SRC = src/video.c
