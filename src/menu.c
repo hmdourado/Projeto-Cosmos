@@ -1489,7 +1489,7 @@ void executarMenu(Cadastro *cadastro) {
         return;
     }
 
-   SetConfigFlags(FLAG_WINDOW_UNDECORATED );
+   SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE );
     
     InitWindow(1280, 720, "COSMOS");
 

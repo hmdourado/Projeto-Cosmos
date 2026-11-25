@@ -16,7 +16,7 @@
 int main(void)
 {
     // Inicializa a janela.
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(1280, 720, "COSMOS - Teste da Tela de Vitoria");
 
     if (!IsWindowReady()) {
