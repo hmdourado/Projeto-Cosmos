@@ -5,7 +5,7 @@
 // Fontes privadas do módulo
 static Font fonteTitulo;
 static Font fontePrincipal;
-
+static Font fonteLogo;
 
 
 static Font carregarFonte(const char *caminho, int tamanho)
@@ -54,6 +54,10 @@ void inicializarFontes(void)
     fontePrincipal = carregarFonte(
         "assets/fonts/Xolonium-Regular.ttf", 64
     );
+
+    fonteLogo = carregarFonte(
+        "assets/fonts/spacerangerlaser.ttf",64
+    );
 }
 
 Font obterFonteTitulo(void)
@@ -65,7 +69,10 @@ Font obterFontePrincipal(void)
 {
     return fontePrincipal;
 }
-
+Font obterFonteLogo(void)
+{
+    return fonteLogo;
+}
 
 
 void descarregarFontes(void)

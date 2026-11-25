@@ -152,11 +152,12 @@ static bool desenharBotaoPremium(
         DrawTextEx(obterFonteTitulo(), descricao, (Vector2){(int)area.x + 20, (int)area.y + 39}, 12,1, COR_TEXTO_SEC);
     }
     if (atalho != NULL) {
-        DrawText(atalho,
+        DrawText(
+                 atalho,
                  (int)(area.x + area.width - MeasureText(atalho, 11) - 15),
-                 (int)area.y + 15,
-                 11,
-                 hover ? COR_CIANO : COR_TEXTO_SEC);
+                (int)area.y + 15,11, 
+                hover ? COR_CIANO : COR_TEXTO_SEC);
+
     }
 
     return hover && IsMouseButtonReleased(MOUSE_BUTTON_LEFT);
@@ -170,7 +171,7 @@ static bool desenharBotaoPremium(
  */
 static void desenharCabecalhoTela(const char *secao, const char *subtitulo) {
     float largura = (float)GetScreenWidth();
-    DrawText("COSMOS", 42, 28, 28, COR_TEXTO);
+    DrawTextEx(obterFonteLogo(),"COSMOS", (Vector2){ 42, 28,}, 28, 2, COR_TEXTO);
     DrawText("CENTRAL DE COMANDO", 44, 61, 10, COR_CIANO);
     DrawText(secao, 42, 112, 30, COR_TEXTO);
     DrawText(subtitulo, 44, 150, 14, COR_TEXTO_SEC);
@@ -1333,7 +1334,7 @@ static void desenharPainelRankingMenu(void) {
 static void desenharTelaAjudaMenu(void) {
     float largura = (float)GetScreenWidth();
     desenharCabecalhoTela("CENTRAL DE AJUDA", "Conheca os recursos disponiveis durante uma partida.");
-    const char *titulos[4] = {"SUPERNOVA", "MISSAO NASA", "TELESCOPIO", "ESPECIALISTA"};
+    const char *titulos[4] = {"SUPERNOVA", "MISSAO NASA", "TELESCÓPIO", "ESPECIALISTA"};
     const char *descricoes[4] = {
         "Elimina duas alternativas incorretas, preservando a resposta certa.",
         "Apresenta uma pista especifica relacionada ao enunciado atual.",
@@ -1397,7 +1398,7 @@ void executarMenu(Cadastro *cadastro) {
         return;
     }
 
-    //SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
+    SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
     
     InitWindow(1280, 720, "COSMOS");
 
@@ -1538,6 +1539,9 @@ void executarMenu(Cadastro *cadastro) {
 
                 DrawText("UTFPR  |  ENGENHARIA DE COMPUTAÇÃO  |  V.1.0.0",
                          66, (int)altura - 34, 10, (Color){185, 205, 226, 190});
+
+                DrawText("SOBRE NÓS",
+                         (int)largura - 100, (int)altura - 27, 10, COR_CIANO);
                 DrawText("WASD / MOUSE  -  NAVEGACAO", (int)largura - 442,
                          (int)altura - 27, 9, (Color){185, 205, 226, 190});
                 if (mensagemMenu[0] != '\0') {

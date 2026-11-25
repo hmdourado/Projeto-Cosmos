@@ -8,6 +8,6 @@ void descarregarFontes(void);
 
 Font obterFonteTitulo(void);
 Font obterFontePrincipal(void);
-
+Font obterFonteLogo(void);
 
 #endif
