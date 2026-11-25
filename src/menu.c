@@ -63,7 +63,13 @@ typedef struct {
     Pergunta pergunta;
 } FormularioPergunta;
 
-/* Retorna o nome legivel de um nivel de dificuldade. */
+
+/**
+ * @brief Retorna o nome legivel de um nivel de dificuldade.
+ * 
+ * @param nivel 
+ * @return const char* :  nivel definido 
+ */
 static const char *obterNomeNivelMenu(NivelDificuldade nivel) {
     switch (nivel) {
         case MUITO_FACIL: return "MUITO FACIL";
@@ -75,7 +81,13 @@ static const char *obterNomeNivelMenu(NivelDificuldade nivel) {
     }
 }
 
-/* Desenha um painel com borda suave, brilho superior e transparencia. */
+/**
+ * @brief Painel com borda suave, brilho superior e transparencia.
+ * 
+ * @param area 
+ * @param fundo 
+ * @param borda 
+ */
 static void desenharPainel(Rectangle area, Color fundo, Color borda) {
     DrawRectangleRounded(area, 0.075f, 12, fundo);
     DrawRectangleRoundedLinesEx(area, 0.075f, 12, 1.4f, borda);
@@ -87,7 +99,18 @@ static void desenharPainel(Rectangle area, Color fundo, Color borda) {
     );
 }
 
-/* Desenha botao premium com estados normal, hover e pressionado. */
+
+/**
+ * @brief Desenha botao (em dourado) com os estados hover, normal e pressionado
+ * 
+ * @param area 
+ * @param titulo 
+ * @param descricao 
+ * @param atalho 
+ * @param destaque 
+ * @return true  
+ * @return false 
+ */
 static bool desenharBotaoPremium(
     Rectangle area,
     const char *titulo,
@@ -138,7 +161,12 @@ static bool desenharBotaoPremium(
     return hover && IsMouseButtonReleased(MOUSE_BUTTON_LEFT);
 }
 
-/* Desenha uma faixa de cabecalho padronizada para as telas internas. */
+/**
+ * @brief Desenha uma faixa de cabecalho padronizada para as telas internas.
+ * 
+ * @param secao 
+ * @param subtitulo 
+ */
 static void desenharCabecalhoTela(const char *secao, const char *subtitulo) {
     float largura = (float)GetScreenWidth();
     DrawText("COSMOS", 42, 28, 28, COR_TEXTO);
@@ -148,7 +176,10 @@ static void desenharCabecalhoTela(const char *secao, const char *subtitulo) {
     DrawLine(42, 180, (int)largura - 42, 180, (Color){57, 112, 158, 115});
 }
 
-/* Desenha estrelas discretas quando o video de fundo nao estiver disponivel. */
+/**
+ * @brief Desenha estrelas discretas quando o video de fundo nao estiver disponivel.
+ * 
+ */
 static void desenharFundoAlternativo(void) {
     int largura = GetScreenWidth();
     int altura = GetScreenHeight();
@@ -165,13 +196,26 @@ static void desenharFundoAlternativo(void) {
     }
 }
 
-/* Desenha somente o quadro atual do video, sem filtros ou overlays no menu. */
+
+/**
+ * @brief Desenha somente o quadro atual do video, sem filtros ou overlays no menu
+ * 
+ * @param fundo 
+ * @param videoDisponivel 
+ */
 static void desenharFundoMenu(VideoBackground *fundo, bool videoDisponivel) {
     if (videoDisponivel) VideoDraw(fundo);
     else desenharFundoAlternativo();
 }
 
-/* Transfere o estado da partida para a estrutura consumida pela tela Raylib. */
+
+/**
+ * @brief Transfere o estado da partida para a estrutura consumida pela tela Raylib.
+ * 
+ * @param partida 
+ * @param dados 
+ * @param mensagem 
+ */
 static void atualizarDadosTelaJogo(
     const Partida *partida,
     DadosTelaJogo *dados,
@@ -197,7 +241,14 @@ static void atualizarDadosTelaJogo(
     }
 }
 
-/* Converte uma acao visual no tipo de ajuda reconhecido pelo modulo de regras. */
+/**
+ * @brief Converte uma acao visual no tipo de ajuda reconhecido pelo modulo de regras.
+ * 
+ * @param acao 
+ * @param tipo 
+ * @return true 
+ * @return false 
+ */
 static bool obterTipoAjudaMenu(AcaoTelaJogo acao, TipoAjuda *tipo) {
     if (tipo == NULL) return false;
 
@@ -210,7 +261,12 @@ static bool obterTipoAjudaMenu(AcaoTelaJogo acao, TipoAjuda *tipo) {
     }
 }
 
-/* Converte a opcao selecionada na letra esperada por responderPergunta(). */
+/**
+ * @brief Converte a opcao selecionada na letra esperada por responderPergunta()
+ * 
+ * @param acao AcaoTelaJogo
+ * @return char : opcao para ser param da funcao responderPergunta()
+ */
 static char obterLetraRespostaMenu(AcaoTelaJogo acao) {
     switch (acao) {
         case ACAO_TELA_JOGO_RESPOSTA_A: return 'A';
@@ -221,7 +277,16 @@ static char obterLetraRespostaMenu(AcaoTelaJogo acao) {
     }
 }
 
-/* Atualiza os efeitos sonoros apenas quando o cursor entra em um controle. */
+
+/**
+ * @brief Atualiza os efeitos sonoros apenas quando o cursor entra em um controle.
+ * 
+ * @param audio 
+ * @param audioDisponivel 
+ * @param estado 
+ * @param hoverAlternativaAnterior 
+ * @param hoverAjudaAnterior 
+ */
 static void atualizarSonsHoverJogo(
     AudioJogo *audio,
     bool audioDisponivel,
@@ -243,7 +308,16 @@ static void atualizarSonsHoverJogo(
     }
 }
 
-/* Apresenta o resultado final e a entrada do nome para registrar no ranking. */
+/**
+ * @brief  Apresenta o resultado final e a entrada do nome para registrar no ranking.
+ * 
+ * @param partida 
+ * @param vitoria 
+ * @param desistencia 
+ * @param nome 
+ * @param rankingRegistrado 
+ * @param mensagemRanking 
+ */
 static void desenharResultadoPartida(
     const Partida *partida,
     bool vitoria,
@@ -299,7 +373,15 @@ static void desenharResultadoPartida(
     }
 }
 
-/* Executa uma partida real usando os modulos de regras e a interface cinematografica. */
+/**
+ * @brief Executa uma partida real usando os modulos de regras jogo.c e a interface cinematografica. 
+ * 
+ * @param cadastro 
+ * @param audio 
+ * @param audioDisponivel 
+ * @param fundo 
+ * @param videoDisponivel 
+ */
 static void executarPartidaRaylib(
     Cadastro *cadastro,
     AudioJogo *audio,
@@ -531,7 +613,19 @@ static void executarPartidaRaylib(
     liberarEstadoVisualTelaJogo(&estadoVisual);
 }
 
-/* Retorna o indice do proximo registro que atende ao filtro informado. */
+
+/*
+                    FILTROS
+*/
+
+/**
+ * @brief 
+ * 
+ * @param cadastro 
+ * @param filtroNivel 
+ * @param inicio 
+ * @return int : indice do proximo registro que atende ao filtro informado
+ */
 static int localizarPerguntaFiltrada(
     const Cadastro *cadastro,
     int filtroNivel,
@@ -549,7 +643,14 @@ static int localizarPerguntaFiltrada(
     return -1;
 }
 
-/* Conta quantas perguntas pertencem ao filtro atual. */
+
+/**
+ * @brief Conta quantas perguntas pertencem ao filtro atual.
+ * 
+ * @param cadastro 
+ * @param filtroNivel 
+ * @return int : qntd perguntas do filtro atual
+ */
 static int contarPerguntasFiltradas(const Cadastro *cadastro, int filtroNivel) {
     if (cadastro == NULL || cadastro->perguntas == NULL) return 0;
 
@@ -560,7 +661,15 @@ static int contarPerguntasFiltradas(const Cadastro *cadastro, int filtroNivel) {
     return total;
 }
 
-/* Remove o ultimo caractere UTF-8 sem deixar bytes de continuacao soltos. */
+/*
+
+                    UTF-8
+*/
+/**
+ * @brief Remove o ultimo caractere do UTF-8 sem deixar bytes de continuacao soltos
+ * 
+ * @param texto 
+ */
 static void removerUltimoCaractereUtf8(char *texto) {
     if (texto == NULL) return;
     size_t tamanho = strlen(texto);
@@ -571,7 +680,15 @@ static void removerUltimoCaractereUtf8(char *texto) {
     texto[indice] = '\0';
 }
 
-/* Acrescenta um ponto de codigo Unicode ao campo, respeitando o limite do vetor. */
+
+
+/**
+ * @brief  Acrescenta um ponto de codigo Unicode ao campo, respeitando o limite do vetor.
+ * 
+ * @param destino 
+ * @param capacidade 
+ * @param codigo 
+ */
 static void acrescentarCodigoUtf8(char *destino, size_t capacidade, int codigo) {
     if (destino == NULL || capacidade == 0 || codigo < 32 || codigo > 0x10FFFF ||
         (codigo >= 0xD800 && codigo <= 0xDFFF)) return;
@@ -605,7 +722,14 @@ static void acrescentarCodigoUtf8(char *destino, size_t capacidade, int codigo) 
     }
 }
 
-/* Retorna o campo de texto que esta ativo no formulario. */
+
+/**
+ * @brief Retorna o campo de texto que esta ativo no formulario. 
+ * 
+ * @param formulario 
+ * @param capacidade 
+ * @return char* 
+ */
 static char *obterCampoFormulario(FormularioPergunta *formulario, size_t *capacidade) {
     if (formulario == NULL || capacidade == NULL) return NULL;
     if (formulario->campoAtivo == 0) {
@@ -619,7 +743,12 @@ static char *obterCampoFormulario(FormularioPergunta *formulario, size_t *capaci
     return NULL;
 }
 
-/* Cria um ID positivo ainda nao utilizado no cadastro. */
+/**
+ * @brief  Cria um ID positivo ainda nao utilizado no cadastro. 
+ * 
+ * @param cadastro 
+ * @return int 
+ */
 static int gerarNovoIdPergunta(const Cadastro *cadastro) {
     if (cadastro == NULL) return 0;
 
@@ -638,7 +767,13 @@ static int gerarNovoIdPergunta(const Cadastro *cadastro) {
     }
 }
 
-/* Confirma se uma string possui ao menos um caractere que nao seja espaco. */
+/**
+ * @brief Confirma se uma string possui ao menos um caractere que nao seja espaco.
+ * 
+ * @param texto 
+ * @return true 
+ * @return false 
+ */
 static bool textoPossuiConteudo(const char *texto) {
     if (texto == NULL) return false;
     for (size_t i = 0; texto[i] != '\0'; i++) {
@@ -647,7 +782,12 @@ static bool textoPossuiConteudo(const char *texto) {
     return false;
 }
 
-/* Valida os campos do formulario antes de chamar o modulo de cadastro. */
+/**
+ * @brief Valida os campos do formulario antes de chamar o modulo de cadastro.
+ * 
+ * @param pergunta 
+ * @return const char* : mensagem referente ao erro/oq falta para chamar cadastro.
+ */
 static const char *validarFormularioPergunta(const Pergunta *pergunta) {
     if (pergunta == NULL) return "Dados da pergunta invalidos.";
     if (!textoPossuiConteudo(pergunta->enunciado)) return "Informe o enunciado da pergunta.";
