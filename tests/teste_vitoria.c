@@ -18,7 +18,14 @@ int main(void)
     // Inicializa a janela.
     SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(1280, 720, "COSMOS - Teste da Tela de Vitoria");
+    // Inicializa o dispositivo de áudio da Raylib.
+    InitAudioDevice();
 
+    bool audioDisponivel = IsAudioDeviceReady();
+
+    if (!audioDisponivel) {
+        TraceLog(LOG_WARNING, "Audio indisponivel no teste.");
+    }
     if (!IsWindowReady()) {
         fprintf(stderr, "Nao foi possivel inicializar a janela.\n");
         return 1;
@@ -42,7 +49,10 @@ int main(void)
 
     // Inicializa o estado visual e o video de comemoracao.
     EstadoVisualVitoria estado = {0};
-    inicializarEstadoVisualVitoria(&estado);
+    inicializarEstadoVisualVitoria(
+        &estado,
+        audioDisponivel
+    );
 
     // Simulacao do registro no ranking.
     char nomeJogador[TAM_NOME_TESTE] = "";

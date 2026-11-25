@@ -11,6 +11,7 @@
 #include <string.h>
 
 #define CAMINHO_VIDEO_VITORIA "assets/background1.mp4"
+#define CAMINHO_AUDIO_VITORIA "assets/audio/musicaganhador.mp3"
 
 static const Color COR_FUNDO = {5, 12, 29, 255};
 static const Color COR_PAINEL = {7, 20, 42, 235};
@@ -23,22 +24,41 @@ static const Color COR_SECUNDARIA = {153, 181, 210, 255};
 
 
 /* Inicializa o vídeo exclusivo da vitória. */
-void inicializarEstadoVisualVitoria(EstadoVisualVitoria *estado) {
+void inicializarEstadoVisualVitoria(
+    EstadoVisualVitoria *estado,
+    bool audioDisponivel
+) {
     if (estado == NULL) return;
 
     *estado = (EstadoVisualVitoria){0};
 
+    // Inicializa o vídeo de comemoracao.
     estado->videoDisponivel = VideoInit(
         &estado->fundo,
         CAMINHO_VIDEO_VITORIA
     );
 
     if (!estado->videoDisponivel) {
-        TraceLog(LOG_WARNING,
-            "Video de comemoracao indisponivel.");
+        TraceLog(LOG_WARNING, "Video de comemoracao indisponivel.");
+    }
+
+    // Inicializa a trilha sonora da vitória.
+    if (audioDisponivel && FileExists(CAMINHO_AUDIO_VITORIA)) {
+
+        estado->musica = LoadMusicStream(CAMINHO_AUDIO_VITORIA);
+
+        estado->musica.looping = true;
+
+        SetMusicVolume(estado->musica, 0.45f);
+
+        PlayMusicStream(estado->musica);
+
+        estado->musicaDisponivel = true;
+
+    } else {
+        TraceLog(LOG_WARNING, "Audio de comemoracao indisponivel.");
     }
 }
-
 
 /* Atualiza a reprodução do vídeo. */
 void atualizarEstadoVisualVitoria(EstadoVisualVitoria *estado) {
@@ -47,8 +67,11 @@ void atualizarEstadoVisualVitoria(EstadoVisualVitoria *estado) {
     if (estado->videoDisponivel) {
         VideoUpdate(&estado->fundo);
     }
-}
 
+    if (estado->musicaDisponivel) {
+        UpdateMusicStream(estado->musica);
+    }
+}
 
 /* Descarrega os recursos da tela de vitória. */
 void liberarEstadoVisualVitoria(EstadoVisualVitoria *estado) {
@@ -56,11 +79,15 @@ void liberarEstadoVisualVitoria(EstadoVisualVitoria *estado) {
 
     if (estado->videoDisponivel) {
         VideoClose(&estado->fundo);
+        estado->videoDisponivel = false;
     }
 
-    estado->videoDisponivel = false;
+    if (estado->musicaDisponivel) {
+        StopMusicStream(estado->musica);
+        UnloadMusicStream(estado->musica);
+        estado->musicaDisponivel = false;
+    }
 }
-
 
 /* Desenha um painel individual de estatística. */
 static void desenharEstatistica(

@@ -8,7 +8,7 @@
 
 #include <stdbool.h>
 #include "video.h"
-
+#include"raylib.h"
 typedef struct {
     unsigned int perguntasRespondidas;
     unsigned int totalPerguntas;
@@ -22,10 +22,16 @@ typedef struct {
 typedef struct {
     VideoBackground fundo;
     bool videoDisponivel;
+
+    Music musica;
+    bool musicaDisponivel
 } EstadoVisualVitoria;
 
 /* Gerenciamento do vídeo e do estado visual. */
-void inicializarEstadoVisualVitoria(EstadoVisualVitoria *estado);
+void inicializarEstadoVisualVitoria(
+    EstadoVisualVitoria *estado,
+    bool audioDisponivel
+);
 void atualizarEstadoVisualVitoria(EstadoVisualVitoria *estado);
 void liberarEstadoVisualVitoria(EstadoVisualVitoria *estado);
 

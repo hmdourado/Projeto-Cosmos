@@ -530,7 +530,10 @@ static void executarPartidaRaylib(
                         }
 
                         // Inicializa o video de comemoracao apenas uma vez.
-                        inicializarEstadoVisualVitoria(&estadoVitoria);
+                        inicializarEstadoVisualVitoria(
+                            &estadoVitoria,
+                            audioDisponivel
+                        );
                         telaVitoriaInicializada = true;
                         dadosTela.premioAtual = partida.premioAtual;
                         dadosTela.premioGarantido = partida.premioGarantido;

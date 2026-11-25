@@ -12,13 +12,13 @@
 
 // Mantém os caminhos dos efeitos na mesma ordem definida em EfeitoAudio.
 static const char *ARQUIVOS_EFEITOS[QUANT_EFEITOS_AUDIO] = {
-    "hover.wav",
+    "hover.mp3",
     "selecao.wav",
-    "transicao.wav",
-    "resposta_correta.wav",
+    "transition.mp3",
+    "correct.mp3",
     "resposta_incorreta.wav",
     "marco_seguranca.wav",
-    "vitoria.wav"
+    "musicaganhador.mp3"
 };
 
 // Limita o volume para evitar valores fora do intervalo aceito pela Raylib.
