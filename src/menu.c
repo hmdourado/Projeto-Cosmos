@@ -399,11 +399,27 @@ static void executarPartidaRaylib(
     Partida partida;
     inicializarPartida(&partida);
     ResultadoInicio inicio = iniciarPartida(&partida, cadastro);
+    
     if (inicio != INICIO_SUCESSO) {
         TraceLog(LOG_WARNING, "Não foi possivel iniciar a partida. Codigo: %d", inicio);
         return;
     }
+    // Carrega o filtro visual utilizado no fundo da partida.
+    Shader shaderCinza = {0};
+    bool shaderCinzaDisponivel = false;
 
+    if (FileExists("assets/shaders/escala_cinza.fs")) {
+        shaderCinza = LoadShader(
+            NULL,
+            "assets/shaders/escala_cinza.fs"
+        );
+
+        shaderCinzaDisponivel = shaderCinza.id > 0;
+    }
+
+    if (!shaderCinzaDisponivel) {
+        TraceLog(LOG_WARNING, "Shader de escala de cinza indisponivel.");
+    }
     DadosTelaJogo dadosTela = {0};
     atualizarDadosTelaJogo(&partida, &dadosTela, "Selecione uma alternativa.");
     EstadoVisualTelaJogo estadoVisual = {0};
@@ -598,8 +614,22 @@ static void executarPartidaRaylib(
 
         BeginDrawing();
             ClearBackground(BLACK);
-            if (videoDisponivel) VideoDraw(fundo);
-            else desenharFundoAlternativo();
+             // Aplica escala de cinza somente ao vídeo de fundo.
+            if (videoDisponivel && fundo != NULL) {
+
+                if (shaderCinzaDisponivel) {
+                    BeginShaderMode(shaderCinza);
+                }
+
+                VideoDraw(fundo);
+
+                if (shaderCinzaDisponivel) {
+                    EndShaderMode();
+                }
+
+            } else {
+                desenharFundoAlternativo();
+            }
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
                           (Color){2, 8, 22, 105});
             desenharTelaJogo(&dadosTela, &estadoVisual);
@@ -1398,7 +1428,7 @@ void executarMenu(Cadastro *cadastro) {
         return;
     }
 
-    SetConfigFlags(FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
+   SetConfigFlags(FLAG_WINDOW_UNDECORATED );
     
     InitWindow(1280, 720, "COSMOS");
 

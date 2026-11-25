@@ -26,7 +26,7 @@ static const Color COR_VERMELHO = { 235, 76, 91, 255 };
 
 #define MARGEM_TELA 24.0f
 #define ESPACO_ELEMENTOS 14.0f
-#define CAMINHO_PERSONAGEM "assets/personagens/apresentadora_cosmos.png"
+#define CAMINHO_PERSONAGEM "assets/personagens/robo.png"
 
 // Armazena as regiões utilizadas para posicionar os elementos da interface.
 typedef struct {
@@ -315,18 +315,6 @@ static void desenharPainelHolografico(Rectangle area, float arredondamento, Colo
     DrawRectangleRoundedLinesEx(brilho, arredondamento, 12, 0.7f, (Color){95, 185, 220, 55});
 }
 
-// Desenha estrelas em movimento com variação de brilho para criar profundidade.
-static void desenharEstrelas(const EstadoVisualTelaJogo *estado) {
-    if (estado == NULL) return;
-
-    for (int i = 0; i < QUANT_ESTRELAS_TELA_JOGO; i++) {
-        const EstrelaTelaJogo *estrela = &estado->estrelas[i];
-        float brilho = 0.5f + 0.5f * sinf(estado->tempo * 1.8f + estrela->fase);
-        unsigned char alfa = (unsigned char)(45.0f + brilho * 125.0f);
-        Color cor = {175, 218, 255, alfa};
-        DrawCircleV(estrela->posicao, estrela->tamanho, cor);
-    }
-}
 
 // Desenha a identificação superior e o progresso da partida.
 static void desenharCabecalho(const DadosTelaJogo *dados) {
@@ -339,7 +327,7 @@ static void desenharCabecalho(const DadosTelaJogo *dados) {
              dados->numeroPergunta, dados->totalPerguntas);
 
     int larguraTexto = MeasureText(progresso, 17);
-    DrawText(progresso, largura - larguraTexto - 28, 22, 17, COR_DESTAQUE);
+    DrawTextEx(obterFonteTitulo(), progresso, (Vector2){ largura - larguraTexto - 28, 22}, 17,2, COR_DESTAQUE);
     DrawLine(24, 69, largura - 24, 69, (Color){68, 119, 157, 170});
 }
 
@@ -609,8 +597,8 @@ static void desenharAreaPersonagem(
         DrawCircleGradient((int)centro.x, (int)(area.y + 145.0f), 58.0f,
             (Color){35, 105, 145, 180}, (Color){9, 20, 40, 220});
         DrawCircleLines((int)centro.x, (int)(area.y + 145.0f), 58.0f, COR_DESTAQUE);
-        desenharTextoCentralizado("HELENA", (Rectangle){area.x, area.y + 215.0f, area.width, 35.0f}, 20.0f, COR_TEXTO);
-        desenharTextoCentralizado("APRESENTADORA COSMOS", (Rectangle){area.x, area.y + 250.0f, area.width, 24.0f}, 10.0f, COR_TEXTO_SEC);
+        desenharTextoCentralizado("MR. ROBOT", (Rectangle){area.x, area.y + 215.0f, area.width, 35.0f}, 20.0f, COR_TEXTO);
+        desenharTextoCentralizado("APRESENTADOR DO COSMOS", (Rectangle){area.x, area.y + 250.0f, area.width, 24.0f}, 10.0f, COR_TEXTO_SEC);
     }
 
     // Apresenta a fala ou orientação atual da personagem.
@@ -619,7 +607,7 @@ static void desenharAreaPersonagem(
 
     const char *fala = dados->mensagemStatus;
     if (fala == NULL || fala[0] == '\0') {
-        fala = "O universo está cheio de descobertas. Vamos comecar!";
+        fala = "O universo está cheio de descobertas. Vamos começar!";
     }
     Rectangle areaFala = {
         layout->balaoPersonagem.x + 12.0f,
@@ -632,7 +620,7 @@ static void desenharAreaPersonagem(
     // Identifica a personagem e sua função no desafio.
     desenharPainelHolografico(layout->identificacaoPersonagem, 0.18f,
         (Color){7, 18, 37, 225}, (Color){70, 126, 164, 180});
-    desenharTextoCentralizado("COMANDANTE HELENA", layout->identificacaoPersonagem,
+    desenharTextoCentralizado("MR. ROBOT", layout->identificacaoPersonagem,
         13.0f, COR_DOURADO);
 }
 
@@ -659,16 +647,6 @@ void inicializarEstadoVisualTelaJogo(EstadoVisualTelaJogo *estado) {
     int largura = GetScreenWidth();
     int altura = GetScreenHeight();
 
-    // Distribui as estrelas inicialmente por toda a área visível.
-    for (int i = 0; i < QUANT_ESTRELAS_TELA_JOGO; i++) {
-        estado->estrelas[i].posicao = (Vector2){
-            (float)GetRandomValue(0, largura > 0 ? largura : 1280),
-            (float)GetRandomValue(0, altura > 0 ? altura : 720)
-        };
-        estado->estrelas[i].velocidade = (float)GetRandomValue(8, 35);
-        estado->estrelas[i].tamanho = (float)GetRandomValue(1, 3);
-        estado->estrelas[i].fase = (float)GetRandomValue(0, 628) / 100.0f;
-    }
 
     // Carrega a personagem fictícia utilizada na lateral da interface.
     estado->personagemDisponivel = inicializarPersonagemCosmos(
@@ -685,7 +663,7 @@ void liberarEstadoVisualTelaJogo(EstadoVisualTelaJogo *estado) {
     estado->personagemDisponivel = false;
 }
 
-// Atualiza as estrelas, os efeitos de hover, a premiação e a personagem.
+// Atualiza as efeitos de hover, a premiação e a personagem.
 void atualizarAnimacaoTelaJogo(
     EstadoVisualTelaJogo *estado,
     const DadosTelaJogo *dados
@@ -698,17 +676,6 @@ void atualizarAnimacaoTelaJogo(
 
     // Conclui gradualmente a animação de entrada da interface.
     estado->entrada = limitarValor(estado->entrada + delta * 1.5f, 0.0f, 1.0f);
-
-    // Atualiza o movimento vertical das estrelas e as reposiciona ao saírem da tela.
-    for (int i = 0; i < QUANT_ESTRELAS_TELA_JOGO; i++) {
-        EstrelaTelaJogo *estrela = &estado->estrelas[i];
-        estrela->posicao.y += estrela->velocidade * delta;
-        if (estrela->posicao.y > GetScreenHeight()) {
-            estrela->posicao.y = 0.0f;
-            estrela->posicao.x = (float)GetRandomValue(0,
-                GetScreenWidth() > 0 ? GetScreenWidth() : 1);
-        }
-    }
 
     // Atualiza a interação dos botões quando existe uma pergunta ativa.
     if (dados != NULL && dados->pergunta != NULL) {
@@ -850,11 +817,8 @@ void desenharTelaJogo(
     int altura = GetScreenHeight();
 
     // Aplica uma camada escura translúcida para preservar o vídeo de fundo do menu.
-    DrawRectangleGradientV(0, 0, largura, altura,
-        (Color){5, 10, 25, 218}, (Color){5, 13, 32, 198});
-
-    // Desenha as estrelas animadas sobre o cenário espacial.
-    desenharEstrelas(estado);
+    DrawRectangleGradientV(-1, 0, largura, altura,
+       BLACK, (Color){5, 13, 32, 198});
 
     if (dados == NULL || dados->pergunta == NULL) {
         desenharTextoCentralizado("NENHUMA PERGUNTA DISPONIVEL",
