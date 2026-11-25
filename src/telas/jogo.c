@@ -224,13 +224,12 @@ static void desenharTextoCentralizado(
 ) {
     if (texto == NULL || area.width <= 0.0f || area.height <= 0.0f) return;
 
-    Font fonte = GetFontDefault();
-    Vector2 medida = MeasureTextEx(fonte, texto, tamanho, 1.0f);
+    Vector2 medida = MeasureTextEx(obterFontePrincipal(), texto, tamanho, 1.0f);
     Vector2 posicao = {
         area.x + (area.width - medida.x) / 2.0f,
         area.y + (area.height - medida.y) / 2.0f
     };
-    DrawTextEx(fonte, texto, posicao, tamanho, 1.0f, cor);
+    DrawTextEx(obterFontePrincipal(), texto, posicao, tamanho, 1.0f, cor);
 }
 
 // Divide o texto em linhas para respeitar os limites da área disponível.
@@ -239,7 +238,7 @@ static void desenharTextoMultilinha(
 ) {
     if (texto == NULL || texto[0] == '\0' || area.width <= 0.0f || area.height <= 0.0f) return;
 
-    Font fonte = GetFontDefault();
+    
     char linha[512] = "";
     const char *cursor = texto;
     float posicaoY = area.y;
@@ -266,7 +265,7 @@ static void desenharTextoMultilinha(
         }
 
         
-    Vector2 medida = MeasureTextEx(fonte, candidata, tamanho, 1.0f);
+    Vector2 medida = MeasureTextEx(obterFontePrincipal(), candidata, tamanho, 1.0f);
     size_t tamanhoCandidata = strlen(candidata);
 
     int precisaQuebrar =
@@ -279,7 +278,7 @@ static void desenharTextoMultilinha(
         }
 
         DrawTextEx(
-            fonte,
+            obterFontePrincipal(),
             linha,
             (Vector2){area.x, posicaoY},
             tamanho,
@@ -300,7 +299,7 @@ static void desenharTextoMultilinha(
 
     // Desenha a última linha quando ainda existe espaço na área.
     if (linha[0] != '\0' && posicaoY + tamanho <= area.y + area.height) {
-        DrawTextEx(fonte, linha, (Vector2){area.x, posicaoY}, tamanho, 1.0f, cor);
+        DrawTextEx(obterFontePrincipal(), linha, (Vector2){area.x, posicaoY}, tamanho, 1.0f, cor);
     }
 }
 
@@ -333,7 +332,7 @@ static void desenharEstrelas(const EstadoVisualTelaJogo *estado) {
 static void desenharCabecalho(const DadosTelaJogo *dados) {
     int largura = GetScreenWidth();
     DrawTextEx(obterFonteLogo(),"COSMOS", (Vector2){26, 14,},27,2, COR_TEXTO);
-    DrawText("DESAFIO COSMICO  /  CENTRAL DE COMANDO", 28, 45, 11, COR_TEXTO_SEC);
+    DrawText("DESAFIO CÓSMICO", 28, 45, 11, COR_VERDE);
 
     char progresso[64];
     snprintf(progresso, sizeof(progresso), "PERGUNTA %02u / %02u",
@@ -350,8 +349,8 @@ static void desenharEscadaPremios(
     Rectangle area
 ) {
     desenharPainelHolografico(area, 0.08f, (Color){7, 18, 39, 225}, COR_BORDA);
-    DrawText("PREMIACAO", (int)area.x + 13, (int)area.y + 13, 15, COR_DOURADO);
-    DrawText("15 NIVEIS", (int)area.x + 13, (int)area.y + 33, 10, COR_TEXTO_SEC);
+    DrawTextEx(obterFonteTitulo(),"PREMIAÇÃO", (Vector2){ (int)area.x + 13, (int)area.y + 13}, 15,2, COR_DOURADO);
+    DrawTextEx(obterFontePrincipal(),"15 NÍVEIS", (Vector2){(int)area.x + 13, (int)area.y + 33} , 10, 2, COR_TEXTO_SEC);
 
     float inicioY = area.y + 56.0f;
     float espaco = 3.0f;
@@ -390,9 +389,10 @@ static void desenharEscadaPremios(
 
         DrawRectangleRounded(linha, 0.22f, 6, fundo);
         DrawRectangleRoundedLinesEx(linha, 0.22f, 6, atual ? 1.8f : 0.8f, borda);
-
-        DrawText(TextFormat("%02d", numero), (int)linha.x + 6,
-                 (int)(linha.y + (linha.height - 12.0f) / 2.0f), 11, texto);
+        
+    
+        DrawTextEx(obterFontePrincipal(),TextFormat("%02d", numero), (Vector2){(int)linha.x + 6,
+                 (int)(linha.y + (linha.height - 12.0f) / 2.0f)} , 11,2, texto);
 
         char valor[40];
         formatarPremio(premio, valor, sizeof(valor));
@@ -428,8 +428,14 @@ static void desenharPainelPergunta(const DadosTelaJogo *dados, Rectangle area) {
     );
 
     int larguraValor = MeasureText(valor, 14);
-    DrawText(valor, (int)(area.x + area.width - larguraValor - 22.0f),
-             (int)area.y + 15, 14, COR_DOURADO);
+    DrawTextEx(
+              obterFonteTitulo(),
+              valor,
+              (Vector2){(int)(area.x + area.width - larguraValor - 22.0f),(int)area.y + 15}, 
+              14,
+              2,
+              COR_DOURADO);
+
     DrawLine((int)area.x + 20, (int)area.y + 40,
              (int)(area.x + area.width - 20), (int)area.y + 40,
              (Color){60, 112, 149, 170});
