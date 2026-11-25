@@ -1,7 +1,0 @@
-[vost#0:0/rawvideo @ 000002214c6d44c0] Error submitting a packet to the muxer: Broken pipe
-    Last message repeated 1 times
-[out#0/rawvideo @ 000002214c643e40] Error muxing a packet
-[out#0/rawvideo @ 000002214c643e40] Task finished with error: Broken pipe
-[out#0/rawvideo @ 000002214c643e40] Terminating thread with error: Broken pipe
-[out#0/rawvideo @ 000002214c643e40] Error writing trailer: Broken pipe
-[out#0/rawvideo @ 000002214c643e40] Error closing file: Broken pipe

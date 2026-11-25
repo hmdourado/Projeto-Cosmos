@@ -1355,7 +1355,7 @@ static void desenharTelaBanco(
             desenharTextoTruncado(pergunta->enunciado, 270, (int)y + 12,
                                   12, (int)(largura - 475.0f), COR_TEXTO);
             DrawText(selecionada ? "SELECIONADA" : "CLIQUE PARA SELECIONAR",
-                     (int)largura - 160, (int)y + 13, 8,
+                     (int)largura - 230, (int)y + 13, 8,
                      selecionada ? COR_VERDE : (Color){115, 145, 173, 190});
         }
     }
