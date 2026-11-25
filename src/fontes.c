@@ -21,6 +21,19 @@ static Font carregarFonte(const char *caminho, int tamanho)
 
     // Acentos utilizados no português
     int acentos[] = {
+        0x00C1, // Á
+        0x00C9, // É
+        0x00CD, // Í
+        0x00D3, // Ó
+        0x00DA, // Ú
+        0x00C2, // Â
+        0x00CA, // Ê
+        0x00CE, // Î
+        0x00D4, // Ô
+        0x00DB, // Û
+        0x00C7, // Ç
+        0x00C3, // Ã
+        0x00D5, // Õ
         0x00E1, // á
         0x00E9, // é
         0x00ED, // í

@@ -1365,7 +1365,7 @@ static void desenharTelaConfiguracoes(
     float volumeEfeitos
 ) {
     float largura = (float)GetScreenWidth();
-    desenharCabecalhoTela("CONFIGURACOES", "Ajuste a experiencia sonora da sua jornada.");
+    desenharCabecalhoTela("CONFIGURAÇÕES", "Ajuste a experiência sonora da sua jornada.");
     Rectangle painel = {70, 220, largura - 140, 315};
     desenharPainel(painel, COR_PAINEL, COR_BORDA);
     DrawText("AUDIO DO JOGO", 105, 250, 17, COR_TEXTO);
@@ -1528,7 +1528,7 @@ void executarMenu(Cadastro *cadastro) {
                 }
                 y += h + gap;
                 if (desenharBotaoPremium((Rectangle){x, y, w, h},
-                    "CONFIGURACOES", "Ajuste a ambiencia e os efeitos sonoros.", "05  /  SET", false)) {
+                    "CONFIGURAÇÕES", "Ajuste a ambiencia e os efeitos sonoros.", "05  /  SET", false)) {
                     telaAtual = MENU_CONFIGURACOES;
                 }
                 y += h + gap;
