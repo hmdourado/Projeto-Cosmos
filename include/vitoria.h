@@ -1,6 +1,12 @@
 /**
  * @file vitoria.h
- * @brief Interface da tela de vitória do Cosmos.
+ * @author Arthur Morais Palitot Fernandes (arthurpalitot@gmail.com | arthurmoraisfernandes@alunos.utfpr.edu.br)
+ * @brief 
+ * @version 0.1
+ * @date 25-11-2026
+ * 
+ * @copyright Copyright (c) 2026
+ * 
  */
 
 #ifndef VITORIA_H

@@ -1,6 +1,12 @@
 /**
  * @file jogo.c
- * @brief Implementação da interface gráfica cinematográfica da partida utilizando Raylib.
+ * @author Arthur Morais Palitot Fernandes (arthurpalitot@gmail.com | arthurmoraisfernandes@alunos.utfpr.edu.br)
+ * @brief 
+ * @version 0.1
+ * @date 25-11-2026
+ * 
+ * @copyright Copyright (c) 2026
+ * 
  */
 #include "../../include/telas.h"
 #include "../../include/jogo.h"
