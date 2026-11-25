@@ -21,4 +21,4 @@ void main()
         vec3(intensidade),
         cor.a
     );
-}
+}s

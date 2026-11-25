@@ -19,7 +19,7 @@
 #include "../include/telas.h"
 #include "../include/ranking.h"
 #include "../include/fontes.h"
-
+#include "../include/vitoria.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -391,6 +391,12 @@ static void executarPartidaRaylib(
     VideoBackground *fundo,
     bool videoDisponivel
 ) {
+
+    EstadoVisualVitoria estadoVitoria = {0};
+    DadosTelaVitoria dadosVitoria = {0};
+
+    bool telaVitoriaInicializada = false;
+
     if (cadastro == NULL || cadastro->quantidade == 0) {
         TraceLog(LOG_WARNING, "Naão há perguntas cadastradas para iniciar a partida.");
         return;
@@ -445,6 +451,10 @@ static void executarPartidaRaylib(
         if (videoDisponivel) VideoUpdate(fundo);
         if (audioDisponivel) atualizarAudioJogo(audio);
         atualizarAnimacaoTelaJogo(&estadoVisual, &dadosTela);
+
+        if (partidaEncerrada && vitoria && telaVitoriaInicializada) {
+             atualizarEstadoVisualVitoria(&estadoVitoria);
+        }
 
         if (aguardandoProximaPergunta && GetTime() >= instanteProximaPergunta) {
             atualizarDadosTelaJogo(&partida, &dadosTela, "Nova pergunta. Boa sorte!");
@@ -501,11 +511,33 @@ static void executarPartidaRaylib(
                         registrarFeedbackTelaJogo(&estadoVisual, FEEDBACK_ACERTO);
                         definirAcaoPersonagem(&estadoVisual.personagem, PERSONAGEM_VITORIA);
                         if (audioDisponivel) reproduzirEfeitoAudio(audio, EFEITO_VITORIA);
+                        // Prepara as estatisticas da jornada.
+                        dadosVitoria.perguntasRespondidas = TOTAL_PERGUNTAS_PARTIDA;
+                        dadosVitoria.totalPerguntas = TOTAL_PERGUNTAS_PARTIDA;
+
+                        dadosVitoria.acertos = partida.acertos;
+                        dadosVitoria.premioFinal = partida.premioAtual;
+                        dadosVitoria.premioGarantido = partida.premioGarantido;
+
+                        dadosVitoria.totalAjudas = TOTAL_AJUDAS;
+                        dadosVitoria.ajudasUtilizadas = 0;
+
+                        // Conta as ajudas utilizadas durante a partida.
+                        for (int i = 0; i < TOTAL_AJUDAS; i++) {
+                            if (partida.ajudas.usadas[i]) {
+                                dadosVitoria.ajudasUtilizadas++;
+                            }
+                        }
+
+                        // Inicializa o video de comemoracao apenas uma vez.
+                        inicializarEstadoVisualVitoria(&estadoVitoria);
+                        telaVitoriaInicializada = true;
                         dadosTela.premioAtual = partida.premioAtual;
                         dadosTela.premioGarantido = partida.premioGarantido;
                         dadosTela.mensagemStatus = "Todas as perguntas foram respondidas!";
                         partidaEncerrada = true;
                         vitoria = true;
+                        
                         break;
                     case RESPOSTA_INCORRETA:
                         registrarFeedbackTelaJogo(&estadoVisual, FEEDBACK_ERRO);
@@ -613,35 +645,64 @@ static void executarPartidaRaylib(
         }
 
         BeginDrawing();
+
+        if (partidaEncerrada && vitoria) {
+
+            // Pagina exclusiva de comemoracao.
+            desenharTelaVitoria(
+                &estadoVitoria,
+                &dadosVitoria,
+                nomeJogador,
+                rankingRegistrado,
+                mensagemRanking
+            );
+
+        } else {
+
+            // Interface normal da partida.
             ClearBackground(BLACK);
-             // Aplica escala de cinza somente ao vídeo de fundo.
-            if (videoDisponivel && fundo != NULL) {
 
-                if (shaderCinzaDisponivel) {
-                    BeginShaderMode(shaderCinza);
-                }
-
+            if (videoDisponivel) {
                 VideoDraw(fundo);
-
-                if (shaderCinzaDisponivel) {
-                    EndShaderMode();
-                }
-
             } else {
                 desenharFundoAlternativo();
             }
-            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
-                          (Color){2, 8, 22, 105});
-            desenharTelaJogo(&dadosTela, &estadoVisual);
-            if (partidaEncerrada) {
-                desenharResultadoPartida(&partida, vitoria, desistencia, nomeJogador,
-                                         rankingRegistrado, mensagemRanking);
-            }
-            DrawText("F1  VOLTAR AO MENU", 28, GetScreenHeight() - 28,
-                     11, (Color){190, 210, 230, 190});
-        EndDrawing();
-    }
 
+            DrawRectangle(
+                0, 0,
+                GetScreenWidth(),
+                GetScreenHeight(),
+                (Color){2, 8, 22, 105}
+            );
+
+            desenharTelaJogo(&dadosTela, &estadoVisual);
+
+            // Mantem a tela antiga para derrota e desistencia.
+            if (partidaEncerrada) {
+                desenharResultadoPartida(
+                    &partida,
+                    vitoria,
+                    desistencia,
+                    nomeJogador,
+                    rankingRegistrado,
+                    mensagemRanking
+                );
+            }
+        }
+
+        DrawText(
+            "F1  VOLTAR AO MENU",
+            28,
+            GetScreenHeight() - 28,
+            11,
+            (Color){190, 210, 230, 190}
+        );
+
+    EndDrawing();
+    }
+    if (telaVitoriaInicializada) {
+        liberarEstadoVisualVitoria(&estadoVitoria);
+    }
     liberarEstadoVisualTelaJogo(&estadoVisual);
 }
 
@@ -1501,6 +1562,7 @@ void executarMenu(Cadastro *cadastro) {
             mensagemMenu[0] = '\0';
             instanteMensagem = 0.0;
         }
+        
 
         if (telaAtual != MENU_INICIO && IsKeyPressed(KEY_ESCAPE) &&
             !formulario.ativo && !confirmarExclusao) {

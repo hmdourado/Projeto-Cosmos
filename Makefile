@@ -5,6 +5,8 @@ CPPFLAGS = -Iinclude
 
 MENU_SRC ?= src/menu.c
 
+TEST_VITORIA = build/teste_vitoria$(EXE_EXT)
+
 # Modulos de regras e gerenciamento de dados.
 BASE_SRC = src/pergunta.c \
            src/cadastro.c \
@@ -13,6 +15,7 @@ BASE_SRC = src/pergunta.c \
            src/ajuda.c \
            src/pistas.c \
            src/ranking.c \
+		   
 		  
 
 # Modulos de interface grafica, audio e personagem.
@@ -22,6 +25,7 @@ PAGINAS_SRC = src/telas/cadastro.c \
               src/telas/ranking.c \
               src/telas/audio.c \
               src/telas/personagem.c\
+			  src/telas/vitoria.c\
 			  src/fontes.c
 
 # Modulo de reproducao de video.
@@ -44,9 +48,18 @@ TEST_JOGO = build/test_jogo$(EXE_EXT)
 TEST_INTEGRACAO = build/teste_integracao$(EXE_EXT)
 TEST_AJUDA = build/test_ajuda$(EXE_EXT)
 PREVIEW_JOGO = build/preview_tela_jogo$(EXE_EXT)
+# Preview independente da tela de vitória.
+TEST_VITORIA_SRC = tests/teste_vitoria.c \
+                   src/telas/vitoria.c \
+                   $(VIDEO_SRC) \
+                   src/fontes.c
 
-.PHONY: all clean run run-terminal run-grafico test preview
+$(TEST_VITORIA): $(TEST_VITORIA_SRC) $(HEADERS) Makefile | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_VITORIA_SRC) $(LDFLAGS) $(LDLIBS) $(RAYLIB_LIBS) -o $@
 
+teste-vitoria: $(TEST_VITORIA)
+	./$(TEST_VITORIA)
+.PHONY: all clean run run-terminal run-grafico test preview teste-vitoria
 all: $(PROGRAMA)
 
 build:
@@ -98,4 +111,5 @@ clean:
 		build/test_jogo build/test_jogo.exe \
 		build/teste_integracao build/teste_integracao.exe \
 		build/test_ajuda build/test_ajuda.exe \
+		build/teste_vitoria build/teste_vitoria.exe \
 		build/preview_tela_jogo build/preview_tela_jogo.exe
