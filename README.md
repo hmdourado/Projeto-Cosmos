@@ -1,3 +1,9 @@
+
+
+# NOTA
+
+DEMOS UM PUSH FORA DO PRAZO, MAS FOI APENAS PELO FFMPEG NAO TER SIDO ENVIADO JUNTO AO PROJETO. FOI AVISADO EM SALA E NÃO HÁ MAIS ALTERAÇÕES.
+
 # Jogo do Milhão Cósmico
 
 **Cosmos** é um jogo de perguntas e respostas sobre Astronomia, desenvolvido em linguagem C como projeto acadêmico da disciplina de Fundamentos de Programação 2, na Universidade Tecnológica Federal do Paraná (UTFPR) — Campus Apucarana. O projeto combina lógica de jogo, gerenciamento dinâmico de dados, persistência em arquivos e uma interface gráfica construída com Raylib.
