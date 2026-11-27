@@ -53,7 +53,7 @@ static Font carregarFonte(const char *caminho, int tamanho)
         0x007E  // ~
     };
 
-    for (int i = 0; i < sizeof(acentos) / sizeof(acentos[0]); i++)
+    for (size_t i = 0; i < sizeof(acentos) / sizeof(acentos[0]); i++)
     {
         caracteres[quantidade++] = acentos[i];
     }

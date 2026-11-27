@@ -30,7 +30,7 @@ typedef struct {
     bool videoDisponivel;
 
     Music musica;
-    bool musicaDisponivel
+    bool musicaDisponivel;
 } EstadoVisualVitoria;
 
 /* Gerenciamento do vídeo e do estado visual. */
